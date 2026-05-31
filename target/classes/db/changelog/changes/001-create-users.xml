@@ -19,9 +19,6 @@
             <column name="password" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="role" type="VARCHAR(30)">
-                <constraints nullable="false"/>
-            </column>
             <column name="active" type="BOOLEAN" defaultValueBoolean="true">
                 <constraints nullable="false"/>
             </column>

@@ -1,0 +1,22 @@
+spring:
+  mvn:
+    problemdetails:
+      enabled: false
+  datasource:
+    url: jdbc:postgresql://localhost:5433/burunzhuy
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.xml
+
+  server:
+    error:
+      include-message: always
+      include-binding-errors: always
