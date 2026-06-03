@@ -1,13 +1,14 @@
 package burunzhuy.resource.user;
 
 import burunzhuy.entity.User;
-import burunzhuy.enums.user.Role;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
+@JsonPropertyOrder({"id", "email", "name", "secondName", "lastName", "phone", "roles"})
 public class UserResource {
     private final Long id;
     private final String email;
@@ -15,7 +16,7 @@ public class UserResource {
     private final String secondName;
     private final String lastName;
     private final Long phone;
-    private final Set<Role> roles;
+    private final Set<String> roles;
 
     public UserResource(User user) {
         this.id = user.getId();
@@ -24,6 +25,9 @@ public class UserResource {
         this.secondName = user.getSecondName();
         this.lastName = user.getLastName();
         this.phone = user.getPhone();
-        this.roles = user.getRole();
+        this.roles = user.getRoles()
+                .stream()
+                .map(role -> role.getName().name())
+                .collect(Collectors.toSet());
     }
 }

@@ -1,9 +1,11 @@
 package burunzhuy.service;
 
 import burunzhuy.dto.auth.RegisterRequest;
+import burunzhuy.entity.Role;
 import burunzhuy.entity.User;
-import burunzhuy.enums.user.Role;
+import burunzhuy.enums.user.RoleEnum;
 import burunzhuy.exception.auth.RegisterException;
+import burunzhuy.repository.RoleRepository;
 import burunzhuy.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +17,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class AuthService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     public User register(RegisterRequest request) {
@@ -29,7 +32,7 @@ public class AuthService {
         newUser.setName(request.getName());
         newUser.setSecondName(request.getSecondName());
         newUser.setLastName(request.getLastName());
-        newUser.setRole(Set.of(Role.BUYER, Role.SELLER));
+        newUser.setRoles(this.getDefaultRoles());
 
         String phoneNumber = request.getPhone().replaceAll("[\\D]+", "");
 
@@ -37,5 +40,12 @@ public class AuthService {
             Long.parseLong(phoneNumber)
         );
         return userRepository.save(newUser);
+    }
+
+    private Set<Role> getDefaultRoles(){
+
+        Set<RoleEnum> setRoles = Set.of(RoleEnum.BUYER, RoleEnum.SELLER);
+
+        return roleRepository.findByNameIn(setRoles);
     }
 }

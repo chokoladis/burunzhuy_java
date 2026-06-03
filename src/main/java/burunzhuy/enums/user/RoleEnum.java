@@ -1,6 +1,6 @@
 package burunzhuy.enums.user;
 
-public enum Role {
+public enum RoleEnum {
     BUYER,
     SELLER,
     MANAGER,
