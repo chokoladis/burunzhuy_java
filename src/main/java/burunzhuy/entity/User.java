@@ -28,13 +28,13 @@ public class User {
     private String email;
 
     @Column(length = 11)
-    private Integer phone;
+    private Long phone;
     @Column(length = 100)
     private String name;
     @Column(length = 100)
-    private String secondName;
+    private String secondName = null;
     @Column(length = 100)
-    private String lastName;
+    private String lastName = null;
 
     @Column(nullable = false)
     private String password;

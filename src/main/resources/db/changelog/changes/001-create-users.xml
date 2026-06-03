@@ -12,7 +12,7 @@
             <column name="email" type="VARCHAR(255)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="phone" type="INT(11)"/>
+            <column name="phone" type="BIGINT(11)"/>
             <column name="name" type="VARCHAR(100)"/>
             <column name="second_name" type="VARCHAR(100)"/>
             <column name="last_name" type="VARCHAR(100)"/>

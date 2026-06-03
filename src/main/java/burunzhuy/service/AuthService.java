@@ -31,10 +31,10 @@ public class AuthService {
         newUser.setLastName(request.getLastName());
         newUser.setRole(Set.of(Role.BUYER, Role.SELLER));
 
+        String phoneNumber = request.getPhone().replaceAll("[\\D]+", "");
+
         newUser.setPhone(
-            Integer.parseInt(
-                    request.getPhone().replaceAll("^\\d+", "")
-            )
+            Long.parseLong(phoneNumber)
         );
         return userRepository.save(newUser);
     }

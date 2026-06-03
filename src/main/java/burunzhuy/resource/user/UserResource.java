@@ -14,7 +14,7 @@ public class UserResource {
     private final String name;
     private final String secondName;
     private final String lastName;
-    private final Integer phone;
+    private final Long phone;
     private final Set<Role> roles;
 
     public UserResource(User user) {
