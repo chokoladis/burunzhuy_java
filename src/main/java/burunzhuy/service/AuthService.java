@@ -1,5 +1,6 @@
 package burunzhuy.service;
 
+import burunzhuy.dto.auth.LoginRequest;
 import burunzhuy.dto.auth.RegisterRequest;
 import burunzhuy.entity.Role;
 import burunzhuy.entity.User;
@@ -7,10 +8,12 @@ import burunzhuy.enums.user.RoleEnum;
 import burunzhuy.exception.auth.RegisterException;
 import burunzhuy.repository.RoleRepository;
 import burunzhuy.repository.UserRepository;
+import burunzhuy.service.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.login.FailedLoginException;
 import java.util.Set;
 
 @Service
@@ -19,6 +22,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public User register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())){
@@ -47,5 +51,16 @@ public class AuthService {
         Set<RoleEnum> setRoles = Set.of(RoleEnum.BUYER, RoleEnum.SELLER);
 
         return roleRepository.findByNameIn(setRoles);
+    }
+
+    public String login(LoginRequest request) throws FailedLoginException
+    {
+        User user = userRepository.findByEmail(request.getEmail());
+
+        if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new FailedLoginException("Не верный email или пароль");
+        }
+
+        return jwtService.generateToken(user.getEmail());
     }
 }

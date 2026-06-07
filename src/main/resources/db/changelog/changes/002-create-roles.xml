@@ -9,7 +9,7 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="role" type="VARCHAR(30)">
+            <column name="name" type="VARCHAR(30)">
                 <constraints nullable="false"/>
             </column>
             <column name="active" type="BOOLEAN" defaultValue="true">
@@ -19,16 +19,16 @@
         </createTable>
         <!--todo сделать добавление через админку + выбирать точки доступа-->
         <insert tableName="roles">
-            <column name="role" value="seller"></column>
+            <column name="name" value="seller"></column>
         </insert>
         <insert tableName="roles">
-            <column name="role" value="buyer"></column>
+            <column name="name" value="buyer"></column>
         </insert>
         <insert tableName="roles">
-            <column name="role" value="manager"></column>
+            <column name="name" value="manager"></column>
         </insert>
         <insert tableName="roles">
-            <column name="role" value="admin"></column>
+            <column name="name" value="admin"></column>
         </insert>
     </changeSet>
 </databaseChangeLog>

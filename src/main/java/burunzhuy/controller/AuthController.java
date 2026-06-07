@@ -1,5 +1,6 @@
 package burunzhuy.controller;
 
+import burunzhuy.dto.auth.LoginRequest;
 import burunzhuy.dto.auth.RegisterRequest;
 import burunzhuy.dto.http.ApiResponse;
 import burunzhuy.entity.User;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.security.auth.login.FailedLoginException;
+
 @RestController
 @RequestMapping("/api/v1/auth/")
 @RequiredArgsConstructor
@@ -30,6 +33,27 @@ public class AuthController {
         } catch (RegisterException error) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(ApiResponse.error(error.getMessage()));
+        } catch (Throwable globalError) {
+            globalError.printStackTrace();
+            Logger.logToFile("auth.txt", globalError.getMessage());
+            return ResponseEntity.internalServerError()
+                    .body(ApiResponse.error("Ошибка выполнения кода"));
+        }
+    }
+
+    @PostMapping("login")
+    public ResponseEntity<ApiResponse<String>> login(@Valid @RequestBody LoginRequest request)
+    {
+        try {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(
+                        ApiResponse.ok(authService.login(request))
+                    );
+        } catch (FailedLoginException error){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(
+                        ApiResponse.error(error.getMessage())
+                    );
         } catch (Throwable globalError) {
             globalError.printStackTrace();
             Logger.logToFile("auth.txt", globalError.getMessage());
