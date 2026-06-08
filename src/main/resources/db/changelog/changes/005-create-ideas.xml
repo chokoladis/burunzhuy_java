@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="005" author="igor">
+        <createTable tableName="ideas">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="title" type="VARCHAR(150)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="short_description" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="preview_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="full_description" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_min" type="NUMERIC(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_instance_buy" type="NUMERIC(12,2)">
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="ideas"
+                baseColumnNames="preview_id"
+                referencedTableName="files"
+                referencedColumnNames="id"
+                constraintName="fk_ideas_preview"/>
+    </changeSet>
+</databaseChangeLog>

@@ -19,16 +19,16 @@
         </createTable>
         <!--todo сделать добавление через админку + выбирать точки доступа-->
         <insert tableName="roles">
-            <column name="name" value="seller"></column>
+            <column name="name" value="SELLER"></column>
         </insert>
         <insert tableName="roles">
-            <column name="name" value="buyer"></column>
+            <column name="name" value="BUYER"></column>
         </insert>
         <insert tableName="roles">
-            <column name="name" value="manager"></column>
+            <column name="name" value="MANAGER"></column>
         </insert>
         <insert tableName="roles">
-            <column name="name" value="admin"></column>
+            <column name="name" value="ADMIN"></column>
         </insert>
     </changeSet>
 </databaseChangeLog>

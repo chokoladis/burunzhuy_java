@@ -8,5 +8,8 @@
     <include file="db/changelog/changes/001-create-users.xml"/>
     <include file="db/changelog/changes/002-create-roles.xml"/>
     <include file="db/changelog/changes/003-update-user-roles.xml"/>
+    <include file="db/changelog/changes/004-create-files.xml"/>
+    <include file="db/changelog/changes/005-create-ideas.xml"/>
+    <include file="db/changelog/changes/006-create-ideas-attaches.xml"/>
 
 </databaseChangeLog>
