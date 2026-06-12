@@ -3,9 +3,10 @@ package burunzhuy.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GeneratedColumn;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,6 +19,10 @@ public class Idea {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
     @Column(length = 150, nullable = false)
     private String title;
@@ -45,4 +50,8 @@ public class Idea {
             inverseJoinColumns = @JoinColumn(name = "file_id")
     )
     private Set<File> attaches = new HashSet<>();
+
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 }

@@ -9,6 +9,9 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false" />
             </column>
+            <column name="owner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
             <column name="title" type="VARCHAR(150)">
                 <constraints nullable="false"/>
             </column>
@@ -29,6 +32,12 @@
             <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
         </createTable>
 
+        <addForeignKeyConstraint
+                baseTableName="ideas"
+                baseColumnNames="owner_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_ideas_owner"/>
         <addForeignKeyConstraint
                 baseTableName="ideas"
                 baseColumnNames="preview_id"
