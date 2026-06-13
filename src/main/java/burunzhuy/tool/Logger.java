@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 
 public class Logger {
     static String PATH_DIR = "logs/";
@@ -25,7 +26,7 @@ public class Logger {
         }
 
         try (FileWriter writer = new FileWriter(file.toFile(), true)){
-            writer.append(data).append('\n');
+            writer.append(LocalDateTime.now() + " - message: " + data).append('\n');
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }

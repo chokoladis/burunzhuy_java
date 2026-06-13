@@ -3,6 +3,7 @@ package burunzhuy.resource.idea;
 import burunzhuy.entity.File;
 import burunzhuy.entity.Idea;
 import burunzhuy.resource.FileResource;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -22,6 +23,7 @@ final public class FullResource {
     private BigDecimal priceMin;
     private BigDecimal priceInstanceBuy;
 
+    @JsonPropertyOrder({"id", "title", "shortDescription", "preview", "fullDescription", "attaches", "priceMin", "priceInstanceBuy"})
     public FullResource(Idea idea)
     {
         this.id = idea.getId();

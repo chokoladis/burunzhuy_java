@@ -21,16 +21,13 @@ public class File {
 
     @Column(nullable = false, length = 150)
     private String originalName;
-    @Column(length = 500)
+    @Column(nullable = false, length = 500)
     private String path;
-    @Column(length = 50)
-    private String memoType = null;
-
-    @Column(length = 30)
-    @Enumerated(EnumType.STRING)
-    private EntityEnum entity = null;
-    @Column(nullable = false)
-    private Long entityId;
+    @Column(length = 10, nullable = false)
+    private String ext;
+//    todo
+//    @Column(length = 50)
+//    private String memoType = null;
 
     @Column(length = 50)
     @Enumerated(EnumType.STRING)

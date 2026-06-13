@@ -12,16 +12,12 @@
             <column name="original_name" type="VARCHAR(150)">
                 <constraints nullable="false"/>
             </column>
-            <column name="memo_type" type="VARCHAR(50)">
+            <column name="ext" type="VARCHAR(10)">
                 <constraints nullable="false"/>
             </column>
+<!--            todo-->
+<!--            <column name="memo_type" type="VARCHAR(50)"/>-->
             <column name="path" type="VARCHAR(500)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="entity" type="VARCHAR(30)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="entity_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
             <column name="purpose" type="VARCHAR(50)"/>
@@ -29,10 +25,5 @@
             <!--mb составной по полям (entity, entity_id, purpose ?-->
             <column name="created_at" type="TIMESTAMP" defaultValue="NOW()"/>
         </createTable>
-
-        <createIndex indexName="idx_entity_entity_id" tableName="files">
-            <column name="entity"/>
-            <column name="entity_id"/>
-        </createIndex>
     </changeSet>
 </databaseChangeLog>
