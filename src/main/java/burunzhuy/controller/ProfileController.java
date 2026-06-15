@@ -23,7 +23,9 @@ public class ProfileController {
     {
         try {
             return ResponseEntity.ok(
-                ApiResponse.ok(profileService.getCurrentUser())
+                ApiResponse.ok(
+                    new UserResource(profileService.getCurrentUser())
+                )
             );
         } catch (UserException e) {
             return ResponseEntity

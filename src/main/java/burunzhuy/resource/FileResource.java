@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 
 @Getter
+@JsonPropertyOrder({"id", "originalName", "path", "ext"})
 public class FileResource {
     private Long id;
     private String originalName;
@@ -13,7 +14,6 @@ public class FileResource {
 //    private String memoType = null;
 //    private FilePurpose purpose;
 
-    @JsonPropertyOrder({"id", "originalName", "path", "ext"})
     public FileResource(File file)
     {
         this.id = file.getId();

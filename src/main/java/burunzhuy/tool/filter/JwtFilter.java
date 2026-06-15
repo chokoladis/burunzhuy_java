@@ -1,6 +1,8 @@
 package burunzhuy.tool.filter;
 
+import burunzhuy.dto.http.ApiResponse;
 import burunzhuy.service.security.JwtService;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
@@ -20,12 +23,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
-            throws ServletException, IOException {
+            throws ServletException, IOException, ExpiredJwtException {
 
         String authHeader = request.getHeader("Authorization");
 
@@ -35,20 +39,44 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7); // убираем "Bearer "
-        String email = jwtService.extractEmail(token);
 
-        // если email извлечён и пользователь ещё не авторизован в контексте
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            var userDetails = userDetailsService.loadUserByUsername(email);
-
+        try {
             if (jwtService.isValidToken(token)) {
-                var authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
-                );
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                String email = jwtService.extractEmail(token);
+                if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    var userDetails = userDetailsService.loadUserByUsername(email);
+
+                    var authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities()
+                    );
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
+        } catch (ExpiredJwtException e) {
+            this.addError(response, 403, "Ваш токен больше не действителен, необходимо переавторизоваться");
+            return;
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private void addError(HttpServletResponse response, int status, String message)
+    {
+        try {
+            response.setStatus(status);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(
+                objectMapper.writeValueAsString(ApiResponse.error(message))
+            );
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        return path.startsWith("/api/v1/auth/");
     }
 }

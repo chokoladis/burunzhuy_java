@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface IdeaRepository extends JpaRepository<Idea, Long> {
     Page<Idea> findByOwnerId(Long ownerId, Pageable pageable);
+    Idea findByIdAndOwnerId(Long id, Long ownerId);
 }

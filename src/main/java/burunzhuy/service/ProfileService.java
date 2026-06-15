@@ -14,7 +14,7 @@ public class ProfileService {
 
     private final UserRepository userRepository;
 
-    public UserResource getCurrentUser()
+    public User getCurrentUser()
     {
         String email = SecurityContextHolder
                 .getContext()
@@ -26,6 +26,10 @@ public class ProfileService {
             throw new UserException("Пользователь не был найден");
         }
 
-        return new UserResource(user);
+        return user;
+    }
+
+    public Long getCurrentUserId() {
+        return getCurrentUser().getId();
     }
 }

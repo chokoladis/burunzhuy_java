@@ -3,11 +3,13 @@ package burunzhuy.resource.idea;
 import burunzhuy.entity.File;
 import burunzhuy.entity.Idea;
 import burunzhuy.resource.FileResource;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 
 @Getter
+@JsonPropertyOrder({"id", "title", "shortDescription", "preview", "priceMin", "priceInstanceBuy"})
 final public class ShortResource {
     private Long id;
     private String title;

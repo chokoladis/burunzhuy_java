@@ -64,4 +64,18 @@ public class FileService {
 
         return null;
     }
+
+    //todo обработка после delete/update например в idea
+    public boolean remove(File file)
+    {
+        Path filePath = Paths.get(this.uploadDir, file.getPath());
+
+        try {
+            Files.deleteIfExists(filePath);
+            return true;
+        } catch (Throwable e) {
+            Logger.logToFile("storage.txt", e.getMessage());
+            return false;
+        }
+    }
 }

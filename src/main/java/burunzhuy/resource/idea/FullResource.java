@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
+@JsonPropertyOrder({"id", "title", "shortDescription", "preview", "fullDescription", "attaches", "priceMin", "priceInstanceBuy"})
 final public class FullResource {
     private Long id;
     private String title;
@@ -23,7 +24,6 @@ final public class FullResource {
     private BigDecimal priceMin;
     private BigDecimal priceInstanceBuy;
 
-    @JsonPropertyOrder({"id", "title", "shortDescription", "preview", "fullDescription", "attaches", "priceMin", "priceInstanceBuy"})
     public FullResource(Idea idea)
     {
         this.id = idea.getId();

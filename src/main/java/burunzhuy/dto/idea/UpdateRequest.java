@@ -1,0 +1,28 @@
+package burunzhuy.dto.idea;
+
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+
+@Getter
+@Setter
+final public class UpdateRequest {
+
+    @Size(min = 5,max = 150)
+    private String title;
+
+    @Size(min = 15,max = 500)
+    private String shortDescription;
+
+    @Size(min = 50, max = 1000)
+    private String fullDescription;
+
+    @DecimalMin(value = "10")
+    private BigDecimal priceMin;
+
+    @DecimalMin(value = "50")
+    private BigDecimal priceInstanceBuy;
+}
