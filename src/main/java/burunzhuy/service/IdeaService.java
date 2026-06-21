@@ -66,7 +66,8 @@ public class IdeaService {
         newIdea.setPriceMin(request.getPriceMin());
         newIdea.setPriceInstanceBuy(request.getPriceInstanceBuy());
 
-        //todo remove files
+        // todo remove files
+        // todo validate as img
         try {
             newIdea.setPreview(fileService.save(preview, "ideas"));
         } catch (Throwable e) {

@@ -1,13 +1,7 @@
 package burunzhuy.dto.file;
 
-import burunzhuy.enums.file.EntityEnum;
-import burunzhuy.enums.file.FilePurpose;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

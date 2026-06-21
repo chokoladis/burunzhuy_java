@@ -1,6 +1,5 @@
 package burunzhuy.resource.idea;
 
-import burunzhuy.entity.File;
 import burunzhuy.entity.Idea;
 import burunzhuy.resource.FileResource;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -13,19 +12,18 @@ import java.util.stream.Collectors;
 @Getter
 @JsonPropertyOrder({"id", "title", "shortDescription", "preview", "fullDescription", "attaches", "priceMin", "priceInstanceBuy"})
 final public class FullResource {
-    private Long id;
-    private String title;
-    private String shortDescription;
-    private FileResource preview;
+    private final Long id;
+    private final String title;
+    private final String shortDescription;
+    private final FileResource preview;
 
-    private String fullDescription;
-    private Set<FileResource> attaches;
+    private final String fullDescription;
+    private final Set<FileResource> attaches;
 
-    private BigDecimal priceMin;
-    private BigDecimal priceInstanceBuy;
+    private final BigDecimal priceMin;
+    private final BigDecimal priceInstanceBuy;
 
-    public FullResource(Idea idea)
-    {
+    public FullResource(Idea idea) {
         this.id = idea.getId();
         this.title = idea.getTitle();
         this.shortDescription = idea.getShortDescription();

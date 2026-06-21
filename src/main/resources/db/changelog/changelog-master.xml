@@ -11,5 +11,5 @@
     <include file="db/changelog/changes/004-create-files.xml"/>
     <include file="db/changelog/changes/005-create-ideas.xml"/>
     <include file="db/changelog/changes/006-create-ideas-attaches.xml"/>
-
+    <include file="db/changelog/changes/007-create-auctions.xml"/>
 </databaseChangeLog>

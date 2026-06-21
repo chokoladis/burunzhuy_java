@@ -9,7 +9,7 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
 @EnableJpaAuditing
 @EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
 public class Main {
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SpringApplication.run(Main.class, args);
     }
 }

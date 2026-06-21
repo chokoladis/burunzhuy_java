@@ -1,6 +1,6 @@
 package burunzhuy.entity;
 
-import burunzhuy.enums.file.EntityEnum;
+
 import burunzhuy.enums.file.FilePurpose;
 import jakarta.persistence.*;
 import lombok.Getter;

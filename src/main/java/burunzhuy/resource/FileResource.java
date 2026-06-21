@@ -7,15 +7,14 @@ import lombok.Getter;
 @Getter
 @JsonPropertyOrder({"id", "originalName", "path", "ext"})
 public class FileResource {
-    private Long id;
-    private String originalName;
-    private String path;
-    private String ext;
+    private final Long id;
+    private final String originalName;
+    private final String path;
+    private final String ext;
 //    private String memoType = null;
 //    private FilePurpose purpose;
 
-    public FileResource(File file)
-    {
+    public FileResource(File file) {
         this.id = file.getId();
         this.originalName = file.getOriginalName();
         this.path = file.getPath();
