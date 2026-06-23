@@ -1,7 +1,7 @@
 package burunzhuy.dto.auction;
 
 import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 final public class CreateRequest {
 
-    @NotBlank
+    @NotNull
     private Long ideaId;
 
     @Future

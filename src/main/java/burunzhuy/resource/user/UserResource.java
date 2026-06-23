@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 @Getter
 @JsonPropertyOrder({"id", "email", "name", "secondName", "lastName", "phone", "roles"})
 public class UserResource {
-    private final Long id;
+    private final Long id; // need id ?
     private final String email;
     private final String name;
     private final String secondName;

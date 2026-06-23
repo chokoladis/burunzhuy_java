@@ -5,10 +5,10 @@ import burunzhuy.entity.Auction;
 import burunzhuy.entity.Idea;
 import burunzhuy.enums.auction.Status;
 import burunzhuy.exception.common.EntityNotFound;
+import burunzhuy.repository.AuctionHistoryRepository;
 import burunzhuy.repository.AuctionRepository;
 import burunzhuy.repository.IdeaRepository;
 import burunzhuy.resource.auction.AuctionResource;
-import burunzhuy.tool.Logger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -82,35 +82,6 @@ public class AuctionService {
 
         return new AuctionResource(auctionRepository.save(newAuction));
     }
-
-//    @Transactional
-//    public AuctionResource update(
-//            Long id,
-//            UpdateRequest request,
-//            MultipartFile preview,
-//            MultipartFile[] attaches
-//    )
-//    {
-//        Idea idea = ideaRepository.findByIdAndOwnerId(id, profileService.getCurrentUserId());
-//
-//        if (request.getTitle() != null) idea.setTitle(request.getTitle());
-//        if (request.getShortDescription() != null) idea.setShortDescription(request.getShortDescription());
-//        if (request.getFullDescription() != null) idea.setFullDescription(request.getFullDescription());
-//        if (request.getPriceMin() != null) idea.setPriceMin(request.getPriceMin());
-//        if (request.getPriceInstanceBuy() != null) idea.setPriceInstanceBuy(request.getPriceInstanceBuy());
-//
-//        if (preview != null) idea.setPreview(fileService.save(preview, "ideas"));
-//
-//        if (attaches != null && attaches.length > 0){
-//            Set<File> files = new HashSet<>();
-//            for (var file: attaches) {
-//                files.add(fileService.save(file, "ideas"));
-//            }
-//            idea.setAttaches(files);
-//        }
-//
-//        return new FullResource(ideaRepository.save(idea));
-//    }
 //
 //    @Transactional
 //    public void delete(

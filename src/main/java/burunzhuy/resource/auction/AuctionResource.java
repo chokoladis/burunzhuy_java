@@ -26,7 +26,7 @@ final public class AuctionResource {
     public AuctionResource(Auction auction) {
         this.id = auction.getId();
         this.idea = new ShortResource(auction.getIdea());
-        this.buyer = new UserResource(auction.getBuyer());
+        this.buyer = auction.getBuyer() != null ? new UserResource(auction.getBuyer()) : null;
         this.status = auction.getStatus().name();
 //        todo paginate
         this.history = auction.getHistory()

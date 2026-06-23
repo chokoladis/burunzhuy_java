@@ -38,11 +38,13 @@ public class AuthService {
         newUser.setLastName(request.getLastName());
         newUser.setRoles(this.getDefaultRoles());
 
-        String phoneNumber = request.getPhone().replaceAll("[\\D]+", "");
+        if (request.getPhone() != null) {
+            String phoneNumber = request.getPhone().replaceAll("[\\D]+", "");
+            newUser.setPhone(
+                    Long.parseLong(phoneNumber)
+            );
+        }
 
-        newUser.setPhone(
-            Long.parseLong(phoneNumber)
-        );
         return userRepository.save(newUser);
     }
 
