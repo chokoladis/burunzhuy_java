@@ -7,7 +7,7 @@
     <changeSet id="004" author="igor">
         <createTable tableName="files">
             <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false" />
+                <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="original_name" type="VARCHAR(150)">
                 <constraints nullable="false"/>
@@ -15,8 +15,8 @@
             <column name="ext" type="VARCHAR(10)">
                 <constraints nullable="false"/>
             </column>
-<!--            todo-->
-<!--            <column name="memo_type" type="VARCHAR(50)"/>-->
+            <!--            todo-->
+            <!--            <column name="memo_type" type="VARCHAR(50)"/>-->
             <column name="path" type="VARCHAR(500)">
                 <constraints nullable="false"/>
             </column>

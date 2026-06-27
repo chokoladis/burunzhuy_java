@@ -9,16 +9,12 @@ import burunzhuy.service.AuctionService;
 import burunzhuy.tool.Logger;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/v1/auction/")
@@ -29,8 +25,8 @@ public class AuctionController {
 
     @GetMapping("")
     public ResponseEntity<ApiResponse<Page<?>>> getForCurrentUser(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int perPage
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int perPage
     ) {
         try {
             return ResponseEntity.ok(
@@ -46,8 +42,8 @@ public class AuctionController {
 
     @GetMapping("list/")
     public ResponseEntity<ApiResponse<Page<?>>> getList(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int perPage
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int perPage
     ) {
         try {
             return ResponseEntity.ok(
@@ -79,7 +75,7 @@ public class AuctionController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<AuctionResource>> create(
-        @ModelAttribute @Valid CreateRequest request
+            @ModelAttribute @Valid CreateRequest request
     ) {
         try {
             return ResponseEntity.ok(
@@ -96,12 +92,12 @@ public class AuctionController {
 
     @PatchMapping(value = "{id}/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<HistoryResource>> setBid(
-        @PathVariable("id") Long auctionId,
-        @ModelAttribute BigDecimal bid
+            @PathVariable("id") Long auctionId,
+            @ModelAttribute BigDecimal bid
     ) {
         try {
             return ResponseEntity.ok(
-                ApiResponse.ok(historyService.setBid(auctionId, bid))
+                    ApiResponse.ok(historyService.setBid(auctionId, bid))
             );
         } catch (Throwable e) {
             // сделать спец ошибки по файлам

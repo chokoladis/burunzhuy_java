@@ -38,16 +38,14 @@ class AuthServiceTest {
     }
 
     @Test
-    void registerReturnNull()
-    {
+    void registerReturnNull() {
         var request = new RegisterRequest();
         var response = authService.register(request);
         assertNull(response);
     }
 
     @Test
-    void registerSuccessRegister()
-    {
+    void registerSuccessRegister() {
         var request = new RegisterRequest();
         request.setEmail("test@mail.ru");
         request.setName("test");
@@ -65,8 +63,7 @@ class AuthServiceTest {
     }
 
     @Test
-    void registerReturnErrorExistsByEmail()
-    {
+    void registerReturnErrorExistsByEmail() {
         var request = new RegisterRequest();
         request.setEmail("test@mail.ru");
         request.setName("test");

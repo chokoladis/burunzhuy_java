@@ -1,7 +1,6 @@
 package burunzhuy.repository;
 
 import burunzhuy.entity.Auction;
-import burunzhuy.entity.Idea;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

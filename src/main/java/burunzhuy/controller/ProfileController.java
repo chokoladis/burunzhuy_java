@@ -19,18 +19,17 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @GetMapping("")
-    public ResponseEntity<ApiResponse<UserResource>> getCurrentUser()
-    {
+    public ResponseEntity<ApiResponse<UserResource>> getCurrentUser() {
         try {
             return ResponseEntity.ok(
-                ApiResponse.ok(
-                    new UserResource(profileService.getCurrentUser())
-                )
+                    ApiResponse.ok(
+                            new UserResource(profileService.getCurrentUser())
+                    )
             );
         } catch (UserException e) {
             return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(e.getMessage()));
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error(e.getMessage()));
         }
     }
 }

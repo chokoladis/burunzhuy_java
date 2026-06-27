@@ -7,7 +7,7 @@
     <changeSet id="007" author="igor">
         <createTable tableName="auctions">
             <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false" />
+                <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="idea_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -39,7 +39,7 @@
 
         <createTable tableName="auctions_history">
             <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false" />
+                <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="auction_id" type="BIGINT">
                 <constraints nullable="false"/>

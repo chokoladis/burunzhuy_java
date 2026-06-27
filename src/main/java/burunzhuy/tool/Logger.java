@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class Logger {
     static String PATH_DIR = "logs/";
 
-    public static void logToFile(String filename, String data){
+    public static void logToFile(String filename, String data) {
         Path dir = Paths.get("").toAbsolutePath();
         Path file = dir.resolve(PATH_DIR + filename);
 
@@ -25,7 +25,7 @@ public class Logger {
             return;
         }
 
-        try (FileWriter writer = new FileWriter(file.toFile(), true)){
+        try (FileWriter writer = new FileWriter(file.toFile(), true)) {
             writer.append(LocalDateTime.now() + " - message: " + data).append('\n');
         } catch (IOException e) {
             System.out.println(e.getMessage());

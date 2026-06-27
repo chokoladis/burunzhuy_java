@@ -23,8 +23,7 @@ public class FileService {
 
     private final FileRepository fileRepository;
 
-    public File save(MultipartFile file, String subDir)
-    {
+    public File save(MultipartFile file, String subDir) {
         String ext = this.getExt(file);
         String name = UUID.randomUUID() + "." + ext;
         Path filePath = Paths.get(this.uploadDir, subDir, name);
@@ -48,17 +47,17 @@ public class FileService {
 
             try {
                 Files.deleteIfExists(filePath);
-            } catch (IOException ignored){}
+            } catch (IOException ignored) {
+            }
         }
 
         return null;
     }
 
-    public String getExt(MultipartFile file)
-    {
+    public String getExt(MultipartFile file) {
         //todo file.getContentType()
         String name = file.getOriginalFilename();
-        if (name.contains(".")){
+        if (name.contains(".")) {
             return name.substring(name.indexOf('.') + 1).toLowerCase();
         }
 
@@ -66,8 +65,7 @@ public class FileService {
     }
 
     //todo обработка после delete/update например в idea
-    public boolean remove(File file)
-    {
+    public boolean remove(File file) {
         Path filePath = Paths.get(this.uploadDir, file.getPath());
 
         try {

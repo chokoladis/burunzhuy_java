@@ -3,7 +3,6 @@ package burunzhuy.resource.auction;
 import burunzhuy.entity.AuctionHistory;
 import burunzhuy.resource.user.UserResource;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.math.BigDecimal;

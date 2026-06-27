@@ -4,6 +4,7 @@ import burunzhuy.dto.idea.CreateRequest;
 import burunzhuy.dto.idea.UpdateRequest;
 import burunzhuy.entity.File;
 import burunzhuy.entity.Idea;
+import burunzhuy.exception.auction.AccessException;
 import burunzhuy.exception.common.EntityNotFound;
 import burunzhuy.repository.IdeaRepository;
 import burunzhuy.resource.idea.FullResource;
@@ -29,10 +30,9 @@ public class IdeaService {
     private final FileService fileService;
 
     public Page<FullResource> getForCurrentUser(
-        int page,
-        int perPage
-    )
-    {
+            int page,
+            int perPage
+    ) {
         Pageable pageable = PageRequest.of(page, perPage, Sort.by("createdAt").descending());
 
         Page<Idea> pageIdea = ideaRepository.findByOwnerId(
@@ -42,21 +42,27 @@ public class IdeaService {
     }
 
     public FullResource getById(
-        Long id
-    )
-    {
-        Idea idea = ideaRepository.findByIdAndOwnerId(id, profileService.getCurrentUserId());
-        return new FullResource(idea);
+            Long id
+    ) {
+        Idea idea = ideaRepository.findById(id).orElse(null);
+        if (idea != null) {
+            if (!idea.getOwner().getId().equals(profileService.getCurrentUserId())) {
+                throw new AccessException("У вас нет доступа к идее");
+            }
+
+            return new FullResource(idea);
+        }
+
+        throw new EntityNotFound("Идея не была найдена");
     }
 
 
     @Transactional
     public FullResource create(
-        CreateRequest request,
-        MultipartFile preview,
-        MultipartFile[] attaches
-    )
-    {
+            CreateRequest request,
+            MultipartFile preview,
+            MultipartFile[] attaches
+    ) {
         Idea newIdea = new Idea();
 
         newIdea.setOwner(profileService.getCurrentUser());
@@ -75,9 +81,9 @@ public class IdeaService {
             Logger.logToFile("idea.txt", e.getMessage());
         }
 
-        if (attaches != null && attaches.length > 0){
+        if (attaches != null && attaches.length > 0) {
             Set<File> files = new HashSet<>();
-            for (var file: attaches) {
+            for (var file : attaches) {
                 files.add(fileService.save(file, "ideas"));
             }
             newIdea.setAttaches(files);
@@ -92,8 +98,7 @@ public class IdeaService {
             UpdateRequest request,
             MultipartFile preview,
             MultipartFile[] attaches
-    )
-    {
+    ) {
         Idea idea = ideaRepository.findByIdAndOwnerId(id, profileService.getCurrentUserId());
 
         if (request.getTitle() != null) idea.setTitle(request.getTitle());
@@ -104,9 +109,9 @@ public class IdeaService {
 
         if (preview != null) idea.setPreview(fileService.save(preview, "ideas"));
 
-        if (attaches != null && attaches.length > 0){
+        if (attaches != null && attaches.length > 0) {
             Set<File> files = new HashSet<>();
-            for (var file: attaches) {
+            for (var file : attaches) {
                 files.add(fileService.save(file, "ideas"));
             }
             idea.setAttaches(files);
@@ -117,9 +122,8 @@ public class IdeaService {
 
     @Transactional
     public void delete(
-        Long id
-    )
-    {
+            Long id
+    ) {
         Idea idea = ideaRepository.findByIdAndOwnerId(id, profileService.getCurrentUserId());
         if (idea != null) {
             ideaRepository.delete(idea);

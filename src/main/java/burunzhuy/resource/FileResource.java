@@ -2,10 +2,12 @@ package burunzhuy.resource;
 
 import burunzhuy.entity.File;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
 @JsonPropertyOrder({"id", "originalName", "path", "ext"})
+@EqualsAndHashCode
 public class FileResource {
     private final Long id;
     private final String originalName;

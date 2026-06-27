@@ -16,7 +16,7 @@ import java.util.Set;
 @Table(name = "ideas")
 public class Idea {
 
-//    todo tags
+    //    todo tags
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

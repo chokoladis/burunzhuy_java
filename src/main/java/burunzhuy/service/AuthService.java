@@ -25,7 +25,7 @@ public class AuthService {
     private final JwtService jwtService;
 
     public User register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())){
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new RegisterException("Пользователь с данными email уже существует");
         }
 
@@ -48,15 +48,14 @@ public class AuthService {
         return userRepository.save(newUser);
     }
 
-    private Set<Role> getDefaultRoles(){
+    private Set<Role> getDefaultRoles() {
 
         Set<RoleEnum> setRoles = Set.of(RoleEnum.BUYER, RoleEnum.SELLER);
 
         return roleRepository.findByNameIn(setRoles);
     }
 
-    public String login(LoginRequest request) throws FailedLoginException
-    {
+    public String login(LoginRequest request) throws FailedLoginException {
         User user = userRepository.findByEmail(request.getEmail());
 
         if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {

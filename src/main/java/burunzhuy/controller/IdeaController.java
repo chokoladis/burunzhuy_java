@@ -3,6 +3,7 @@ package burunzhuy.controller;
 import burunzhuy.dto.http.ApiResponse;
 import burunzhuy.dto.idea.CreateRequest;
 import burunzhuy.dto.idea.UpdateRequest;
+import burunzhuy.exception.auction.AccessException;
 import burunzhuy.exception.common.EntityNotFound;
 import burunzhuy.resource.idea.FullResource;
 import burunzhuy.service.IdeaService;
@@ -19,16 +20,14 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/v1/idea/")
 @RequiredArgsConstructor
-public class IdeaController
-{
+public class IdeaController {
     private final IdeaService ideaService;
 
     @GetMapping("")
     public ResponseEntity<ApiResponse<Page<?>>> getForCurrentUser(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int perPage
-    )
-    {
+    ) {
         try {
             return ResponseEntity.ok(
                     ApiResponse.ok(ideaService.getForCurrentUser(page, perPage))
@@ -43,13 +42,20 @@ public class IdeaController
 
     @GetMapping("{id}/")
     public ResponseEntity<ApiResponse<FullResource>> getById(
-        @PathVariable("id") Long id
-    )
-    {
+            @PathVariable("id") Long id
+    ) {
         try {
             return ResponseEntity.ok(
                     ApiResponse.ok(ideaService.getById(id))
             );
+        } catch (EntityNotFound e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error(e.getMessage()));
+        } catch (AccessException e) {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(ApiResponse.error(e.getMessage()));
         } catch (Throwable e) {
             Logger.logToFile("idea.txt", e.getMessage());
             return ResponseEntity
@@ -60,11 +66,10 @@ public class IdeaController
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<FullResource>> create(
-        @ModelAttribute @Valid CreateRequest request,
-        @RequestPart(value = "preview", required = false) MultipartFile preview,
-        @RequestPart(value = "attaches", required = false) MultipartFile[] attaches
-    )
-    {
+            @ModelAttribute @Valid CreateRequest request,
+            @RequestPart(value = "preview", required = false) MultipartFile preview,
+            @RequestPart(value = "attaches", required = false) MultipartFile[] attaches
+    ) {
         try {
             return ResponseEntity.ok(
                     ApiResponse.ok(ideaService.create(request, preview, attaches))
@@ -84,8 +89,7 @@ public class IdeaController
             @ModelAttribute @Valid UpdateRequest request,
             @RequestPart(value = "preview", required = false) MultipartFile preview,
             @RequestPart(value = "attaches", required = false) MultipartFile[] attaches
-    )
-    {
+    ) {
         try {
             return ResponseEntity.ok(
                     ApiResponse.ok(ideaService.update(id, request, preview, attaches))
@@ -101,9 +105,8 @@ public class IdeaController
 
     @DeleteMapping("{id}/")
     public ResponseEntity<?> delete(
-        @PathVariable("id") Long id
-    )
-    {
+            @PathVariable("id") Long id
+    ) {
         try {
             ideaService.delete(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

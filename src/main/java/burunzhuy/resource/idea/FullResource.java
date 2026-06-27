@@ -3,6 +3,7 @@ package burunzhuy.resource.idea;
 import burunzhuy.entity.Idea;
 import burunzhuy.resource.FileResource;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @JsonPropertyOrder({"id", "title", "shortDescription", "preview", "fullDescription", "attaches", "priceMin", "priceInstanceBuy"})
+@EqualsAndHashCode
 final public class FullResource {
     private final Long id;
     private final String title;

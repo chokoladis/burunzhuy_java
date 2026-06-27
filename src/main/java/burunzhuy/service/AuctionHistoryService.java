@@ -17,11 +17,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +29,8 @@ public class AuctionHistoryService {
     private final ProfileService profileService;
 
     public Page<HistoryResource> getList(
-        int page,
-        int perPage
+            int page,
+            int perPage
     ) {
         Pageable pageable = PageRequest.of(page, perPage, Sort.by("createdAt").descending());
 
@@ -42,10 +39,9 @@ public class AuctionHistoryService {
     }
 
     public HistoryResource setBid(
-        Long auctionId,
-        BigDecimal bid
-    )
-    {
+            Long auctionId,
+            BigDecimal bid
+    ) {
         User currentUser = profileService.getCurrentUser();
 
         Auction auction = auctionRepository.findById(auctionId).orElse(null);
@@ -89,8 +85,7 @@ public class AuctionHistoryService {
 //        }
 //    }
 
-    protected void validate(Auction auction, User currentUser, BigDecimal bid)
-    {
+    protected void validate(Auction auction, User currentUser, BigDecimal bid) {
         Idea idea = auction.getIdea();
 
         if (currentUser.getId().equals(idea.getOwner().getId())) {
@@ -101,7 +96,7 @@ public class AuctionHistoryService {
                 .findFirstByAuctionIdOrderByBidDesc(auction.getId())
                 .orElse(null);
 
-        if (bid.compareTo(currentTopAuctionBid.getBid()) != 1){
+        if (bid.compareTo(currentTopAuctionBid.getBid()) != 1) {
             throw new BidException("Ставка должна быть больше текущей");
         }
 
@@ -109,7 +104,7 @@ public class AuctionHistoryService {
             throw new BidException("Минимальная ставка - " + idea.getPriceMin());
         }
 
-        if (!auction.getStatus().equals(Status.OPENED)){
+        if (!auction.getStatus().equals(Status.OPENED)) {
             throw new AccessException("Делать ставки можно только в открытом аукционе");
         }
     }

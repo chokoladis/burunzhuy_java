@@ -26,7 +26,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("register")
-    public ResponseEntity<ApiResponse<UserResource>> register(@Valid @RequestBody RegisterRequest request){
+    public ResponseEntity<ApiResponse<UserResource>> register(@Valid @RequestBody RegisterRequest request) {
         try {
             User userObj = authService.register(request);
             return ResponseEntity.ok(ApiResponse.ok(new UserResource(userObj)));
@@ -42,17 +42,16 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<ApiResponse<String>> login(@Valid @RequestBody LoginRequest request)
-    {
+    public ResponseEntity<ApiResponse<String>> login(@Valid @RequestBody LoginRequest request) {
         try {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
-                        ApiResponse.ok(authService.login(request))
+                            ApiResponse.ok(authService.login(request))
                     );
-        } catch (FailedLoginException error){
+        } catch (FailedLoginException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(
-                        ApiResponse.error(error.getMessage())
+                            ApiResponse.error(error.getMessage())
                     );
         } catch (Throwable globalError) {
             globalError.printStackTrace();

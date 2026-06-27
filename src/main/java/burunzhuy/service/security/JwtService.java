@@ -18,13 +18,11 @@ final public class JwtService {
     @Value("${jwt.lifetime}")
     private long lifetime;
 
-    private SecretKey getKey()
-    {
+    private SecretKey getKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String email)
-    {
+    public String generateToken(String email) {
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(new Date())
@@ -33,8 +31,7 @@ final public class JwtService {
                 .compact();
     }
 
-    private Claims getClaims(String token)
-    {
+    private Claims getClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getKey())
                 .build()
@@ -42,13 +39,11 @@ final public class JwtService {
                 .getPayload();
     }
 
-    public String extractEmail(String token)
-    {
+    public String extractEmail(String token) {
         return getClaims(token).getSubject();
     }
 
-    public boolean isValidToken(String token)
-    {
+    public boolean isValidToken(String token) {
         return getClaims(token).getExpiration().after(new Date());
     }
 

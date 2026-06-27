@@ -60,14 +60,13 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private void addError(HttpServletResponse response, int status, String message)
-    {
+    private void addError(HttpServletResponse response, int status, String message) {
         try {
             response.setStatus(status);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(
-                objectMapper.writeValueAsString(ApiResponse.error(message))
+                    objectMapper.writeValueAsString(ApiResponse.error(message))
             );
         } catch (Throwable e) {
             e.printStackTrace();

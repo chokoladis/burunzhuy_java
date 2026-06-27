@@ -3,7 +3,6 @@ package burunzhuy.service;
 import burunzhuy.entity.User;
 import burunzhuy.exception.auth.UserException;
 import burunzhuy.repository.UserRepository;
-import burunzhuy.resource.user.UserResource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -14,8 +13,7 @@ public class ProfileService {
 
     private final UserRepository userRepository;
 
-    public User getCurrentUser()
-    {
+    public User getCurrentUser() {
         String email = SecurityContextHolder
                 .getContext()
                 .getAuthentication()

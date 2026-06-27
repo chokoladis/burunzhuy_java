@@ -13,7 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -27,8 +28,7 @@ class ProfileServiceTest {
     private User mockUser;
 
     @BeforeEach
-    void setUp()
-    {
+    void setUp() {
         profileService = new ProfileService(userRepository);
 
         mockUser = new User();
@@ -45,22 +45,19 @@ class ProfileServiceTest {
     }
 
     @AfterEach
-    void tearDown()
-    {
+    void tearDown() {
         SecurityContextHolder.clearContext();
     }
 
     @Test
-    void getCurrentUserSuccess()
-    {
+    void getCurrentUserSuccess() {
         when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(this.mockUser);
 
         assertEquals(this.mockUser, profileService.getCurrentUser());
     }
 
     @Test
-    void getCurrentUserErrorNotFound()
-    {
+    void getCurrentUserErrorNotFound() {
         when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(null);
 
         assertThrows(UserException.class, () -> {

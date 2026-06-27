@@ -11,10 +11,10 @@ import java.math.BigDecimal;
 @Setter
 final public class UpdateRequest {
 
-    @Size(min = 5,max = 150)
+    @Size(min = 5, max = 150)
     private String title;
 
-    @Size(min = 15,max = 500)
+    @Size(min = 15, max = 500)
     private String shortDescription;
 
     @Size(min = 50, max = 1000)

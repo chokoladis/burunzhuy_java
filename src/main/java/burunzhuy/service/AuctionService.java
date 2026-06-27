@@ -5,7 +5,6 @@ import burunzhuy.entity.Auction;
 import burunzhuy.entity.Idea;
 import burunzhuy.enums.auction.Status;
 import burunzhuy.exception.common.EntityNotFound;
-import burunzhuy.repository.AuctionHistoryRepository;
 import burunzhuy.repository.AuctionRepository;
 import burunzhuy.repository.IdeaRepository;
 import burunzhuy.resource.auction.AuctionResource;
@@ -28,8 +27,8 @@ public class AuctionService {
     private final ProfileService profileService;
 
     public Page<AuctionResource> getList(
-        int page,
-        int perPage
+            int page,
+            int perPage
     ) {
         Pageable pageable = PageRequest.of(page, perPage, Sort.by("createdAt").descending());
 
@@ -38,10 +37,9 @@ public class AuctionService {
     }
 
     public Page<AuctionResource> getForCurrentUser(
-        int page,
-        int perPage
-    )
-    {
+            int page,
+            int perPage
+    ) {
         Pageable pageable = PageRequest.of(page, perPage, Sort.by("createdAt").descending());
 
         Page<Auction> pageIdea = auctionRepository.findByIdeaOwnerId(
@@ -51,11 +49,10 @@ public class AuctionService {
     }
 
     public AuctionResource getById(
-        Long id
-    )
-    {
+            Long id
+    ) {
         Auction auction = auctionRepository.findById(id).orElse(null);
-        if (auction != null){
+        if (auction != null) {
             return new AuctionResource(auction);
         } else {
             return null;
@@ -65,9 +62,8 @@ public class AuctionService {
 
     @Transactional
     public AuctionResource create(
-         CreateRequest request
-    )
-    {
+            CreateRequest request
+    ) {
         Idea idea = ideaRepository.findById(request.getIdeaId()).orElse(null);
 
         if (idea == null) {
