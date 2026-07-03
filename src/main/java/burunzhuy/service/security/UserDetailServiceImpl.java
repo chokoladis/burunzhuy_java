@@ -1,6 +1,6 @@
 package burunzhuy.service.security;
 
-import burunzhuy.entity.User;
+import burunzhuy.entity.user.User;
 import burunzhuy.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

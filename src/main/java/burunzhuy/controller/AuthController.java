@@ -1,12 +1,13 @@
 package burunzhuy.controller;
 
+import burunzhuy.dto.jwt.JwtResponse;
 import burunzhuy.dto.auth.LoginRequest;
 import burunzhuy.dto.auth.RegisterRequest;
 import burunzhuy.dto.http.ApiResponse;
-import burunzhuy.entity.User;
+import burunzhuy.entity.user.User;
 import burunzhuy.exception.auth.RegisterException;
 import burunzhuy.resource.user.UserResource;
-import burunzhuy.service.AuthService;
+import burunzhuy.service.user.AuthService;
 import burunzhuy.tool.Logger;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,11 +43,11 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<ApiResponse<String>> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<ApiResponse<JwtResponse>> login(@Valid @RequestBody LoginRequest request) {
         try {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
-                            ApiResponse.ok(authService.login(request))
+                        ApiResponse.ok(authService.login(request))
                     );
         } catch (FailedLoginException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

@@ -1,6 +1,7 @@
 package burunzhuy.service;
 
 import burunzhuy.entity.File;
+import burunzhuy.exception.common.ContentTypeNotAllowedException;
 import burunzhuy.repository.FileRepository;
 import burunzhuy.tool.Logger;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +13,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class FileService {
+
+    public static String[] ALLOWED_IMG_TYPE = new String[] {
+            "image/png", "image/jpeg", "image/jpg", "image/gif", "image/webp"
+    };
 
     @Value("${storage.upload-dir}")
     private String uploadDir;
@@ -76,4 +82,17 @@ public class FileService {
             return false;
         }
     }
+
+    public File saveImg(MultipartFile file, String subDir)
+    {
+        if (!Arrays.stream(this.ALLOWED_IMG_TYPE)
+                .anyMatch(file.getContentType()::equals)) {
+            throw new ContentTypeNotAllowedException("Данный тип контента не разрешен в этом поле");
+        }
+
+        return this.save(file, subDir);
+    }
+
+    //  todo проверят на вирусы загружаемые файлы
+    //  если второй разпопытаются загрузить, то заморозить акк
 }

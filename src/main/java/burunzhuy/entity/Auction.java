@@ -1,5 +1,6 @@
 package burunzhuy.entity;
 
+import burunzhuy.entity.user.User;
 import burunzhuy.enums.auction.Status;
 import jakarta.persistence.*;
 import lombok.Getter;

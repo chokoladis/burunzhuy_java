@@ -1,9 +1,10 @@
-package burunzhuy.service;
+package burunzhuy.service.user;
 
+import burunzhuy.dto.jwt.JwtResponse;
 import burunzhuy.dto.auth.LoginRequest;
 import burunzhuy.dto.auth.RegisterRequest;
-import burunzhuy.entity.Role;
-import burunzhuy.entity.User;
+import burunzhuy.entity.user.Role;
+import burunzhuy.entity.user.User;
 import burunzhuy.enums.user.RoleEnum;
 import burunzhuy.exception.auth.RegisterException;
 import burunzhuy.repository.RoleRepository;
@@ -55,13 +56,13 @@ public class AuthService {
         return roleRepository.findByNameIn(setRoles);
     }
 
-    public String login(LoginRequest request) throws FailedLoginException {
+    public JwtResponse login(LoginRequest request) throws FailedLoginException {
         User user = userRepository.findByEmail(request.getEmail());
 
         if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new FailedLoginException("Не верный email или пароль");
         }
 
-        return jwtService.generateToken(user.getEmail());
+        return jwtService.getNewTokens(user.getEmail());
     }
 }

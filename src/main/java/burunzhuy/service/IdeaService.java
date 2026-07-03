@@ -5,9 +5,11 @@ import burunzhuy.dto.idea.UpdateRequest;
 import burunzhuy.entity.File;
 import burunzhuy.entity.Idea;
 import burunzhuy.exception.auction.AccessException;
+import burunzhuy.exception.common.ContentTypeNotAllowedException;
 import burunzhuy.exception.common.EntityNotFound;
 import burunzhuy.repository.IdeaRepository;
 import burunzhuy.resource.idea.FullResource;
+import burunzhuy.service.user.ProfileService;
 import burunzhuy.tool.Logger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -75,7 +77,9 @@ public class IdeaService {
         // todo remove files
         // todo validate as img
         try {
-            newIdea.setPreview(fileService.save(preview, "ideas"));
+            newIdea.setPreview(fileService.saveImg(preview, "ideas"));
+        } catch (ContentTypeNotAllowedException e) {
+            throw e;
         } catch (Throwable e) {
             e.printStackTrace();
             Logger.logToFile("idea.txt", e.getMessage());

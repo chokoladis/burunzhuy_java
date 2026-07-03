@@ -3,7 +3,7 @@ package burunzhuy.controller;
 import burunzhuy.dto.http.ApiResponse;
 import burunzhuy.exception.auth.UserException;
 import burunzhuy.resource.user.UserResource;
-import burunzhuy.service.ProfileService;
+import burunzhuy.service.user.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -8,6 +8,7 @@ import burunzhuy.exception.common.EntityNotFound;
 import burunzhuy.repository.AuctionRepository;
 import burunzhuy.repository.IdeaRepository;
 import burunzhuy.resource.auction.AuctionResource;
+import burunzhuy.service.user.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

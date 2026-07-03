@@ -3,12 +3,14 @@ package burunzhuy.service;
 import burunzhuy.dto.idea.CreateRequest;
 import burunzhuy.entity.File;
 import burunzhuy.entity.Idea;
-import burunzhuy.entity.User;
+import burunzhuy.entity.user.User;
 import burunzhuy.exception.auction.AccessException;
+import burunzhuy.exception.common.ContentTypeNotAllowedException;
 import burunzhuy.exception.common.EntityNotFound;
 import burunzhuy.repository.IdeaRepository;
 import burunzhuy.repository.UserRepository;
 import burunzhuy.resource.idea.FullResource;
+import burunzhuy.service.user.ProfileService;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -90,6 +92,20 @@ class IdeaServiceTest {
         return newIdea;
     }
 
+    private CreateRequest prepareCreateRequest() {
+        CreateRequest request = new CreateRequest();
+
+        var random = new Random();
+
+        request.setTitle(faker.text().text(30));
+        request.setShortDescription(faker.text().text(100));
+        request.setPriceMin(BigDecimal.valueOf(random.nextFloat(5000)));
+        request.setPriceInstanceBuy(BigDecimal.valueOf(random.nextFloat(10000000)));
+        request.setFullDescription(faker.text().text(100, 500));
+
+        return request;
+    }
+
     @Test
     public void listForCurrentUserSuccess() {
         Integer page = 0;
@@ -151,17 +167,23 @@ class IdeaServiceTest {
     public void createSuccess() {
         var preview = new MockMultipartFile(
                 "testfile",
-                "testing_file.txt",
-                "text/plane",
-                "random data".getBytes()
+                "testing_file.png",
+                "image/png",
+                "test data 1231231dsa".getBytes()
         );
-        MultipartFile[] attaches = new MultipartFile[]{preview};
+        MultipartFile[] attaches = new MultipartFile[]{};
 
         var user = new User();
         user.setId(1L);
 
+        var previewFile = new File();
+        previewFile.setId(99L);
+        previewFile.setPath("ideas/testing_file.png");
+        previewFile.setOriginalName("testing_file.png");
+        previewFile.setExt("png");
+
         when(profileService.getCurrentUser()).thenReturn(user);
-        when(fileService.save(preview, "ideas")).thenReturn(new File());
+        when(fileService.saveImg(preview, "ideas")).thenReturn(previewFile);
         when(ideaRepository.save(any(Idea.class))).thenAnswer(invocation -> {
             return invocation.getArguments()[0];
         });
@@ -175,17 +197,24 @@ class IdeaServiceTest {
         assertEquals(new FullResource(savedIdea), result);
     }
 
-    private CreateRequest prepareCreateRequest() {
-        CreateRequest request = new CreateRequest();
+    @Test
+    public void createErrorContentTypeNotAllowed() {
+        var preview = new MockMultipartFile(
+                "testfile",
+                "testing_file.txt",
+                "text/plane",
+                "random data".getBytes()
+        );
+        MultipartFile[] attaches = new MultipartFile[]{preview};
 
-        var random = new Random();
+        var user = new User();
+        user.setId(1L);
 
-        request.setTitle(faker.text().text(30));
-        request.setShortDescription(faker.text().text(100));
-        request.setPriceMin(BigDecimal.valueOf(random.nextFloat(5000)));
-        request.setPriceInstanceBuy(BigDecimal.valueOf(random.nextFloat(10000000)));
-        request.setFullDescription(faker.text().text(100, 500));
+        when(profileService.getCurrentUser()).thenReturn(user);
+        when(fileService.saveImg(preview, "ideas")).thenThrow(ContentTypeNotAllowedException.class);
 
-        return request;
+        assertThrows(ContentTypeNotAllowedException.class, () -> {
+            ideaService.create(this.prepareCreateRequest(), preview, attaches);
+        });
     }
 }

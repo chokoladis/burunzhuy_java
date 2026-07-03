@@ -1,11 +1,12 @@
 package burunzhuy.service;
 
 import burunzhuy.dto.auth.RegisterRequest;
-import burunzhuy.entity.User;
+import burunzhuy.entity.user.User;
 import burunzhuy.exception.auth.RegisterException;
 import burunzhuy.repository.RoleRepository;
 import burunzhuy.repository.UserRepository;
 import burunzhuy.service.security.JwtService;
+import burunzhuy.service.user.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

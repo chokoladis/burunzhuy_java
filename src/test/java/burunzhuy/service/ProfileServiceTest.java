@@ -1,8 +1,9 @@
 package burunzhuy.service;
 
-import burunzhuy.entity.User;
+import burunzhuy.entity.user.User;
 import burunzhuy.exception.auth.UserException;
 import burunzhuy.repository.UserRepository;
+import burunzhuy.service.user.ProfileService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

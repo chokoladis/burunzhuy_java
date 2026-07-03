@@ -1,5 +1,6 @@
 package burunzhuy.entity;
 
+import burunzhuy.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

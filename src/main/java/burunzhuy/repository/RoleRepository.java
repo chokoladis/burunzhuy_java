@@ -1,6 +1,6 @@
 package burunzhuy.repository;
 
-import burunzhuy.entity.Role;
+import burunzhuy.entity.user.Role;
 import burunzhuy.enums.user.RoleEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 

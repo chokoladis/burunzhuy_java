@@ -1,4 +1,4 @@
-package burunzhuy.entity;
+package burunzhuy.entity.user;
 
 import jakarta.persistence.*;
 import lombok.Getter;

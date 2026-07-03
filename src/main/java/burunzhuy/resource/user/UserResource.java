@@ -1,6 +1,6 @@
 package burunzhuy.resource.user;
 
-import burunzhuy.entity.User;
+import burunzhuy.entity.user.User;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 

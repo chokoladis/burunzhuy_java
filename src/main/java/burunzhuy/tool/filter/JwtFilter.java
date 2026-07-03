@@ -3,6 +3,7 @@ package burunzhuy.tool.filter;
 import burunzhuy.dto.http.ApiResponse;
 import burunzhuy.service.security.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,22 +39,25 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = authHeader.substring(7); // убираем "Bearer "
+        String token = authHeader.substring("Bearer ".length());
 
         try {
-            if (jwtService.isValidToken(token)) {
-                String email = jwtService.extractEmail(token);
-                if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    var userDetails = userDetailsService.loadUserByUsername(email);
+            jwtService.validateToken(token, "access");
 
-                    var authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities()
-                    );
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
+            String email = jwtService.extractEmail(token);
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                var userDetails = userDetailsService.loadUserByUsername(email);
+
+                var authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities()
+                );
+                SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         } catch (ExpiredJwtException e) {
-            this.addError(response, 403, "Ваш токен больше не действителен, необходимо переавторизоваться");
+            this.addError(response, 401, "Токен авторизации больше не действителен, необходимо переавторизоваться");
+            return;
+        } catch (JwtException e) {
+            this.addError(response, 400, e.getMessage());
             return;
         }
 
@@ -66,7 +70,7 @@ public class JwtFilter extends OncePerRequestFilter {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(
-                    objectMapper.writeValueAsString(ApiResponse.error(message))
+                objectMapper.writeValueAsString(ApiResponse.error(message))
             );
         } catch (Throwable e) {
             e.printStackTrace();
@@ -76,6 +80,6 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        return path.startsWith("/api/v1/auth/");
+        return path.startsWith("/api/v1/auth/") || path.startsWith("/api/v1/token/");
     }
 }

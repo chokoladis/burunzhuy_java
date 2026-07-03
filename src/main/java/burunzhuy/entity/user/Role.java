@@ -1,4 +1,4 @@
-package burunzhuy.entity;
+package burunzhuy.entity.user;
 
 import burunzhuy.enums.user.RoleEnum;
 import jakarta.persistence.*;

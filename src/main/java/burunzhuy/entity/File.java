@@ -25,13 +25,8 @@ public class File {
     private String path;
     @Column(length = 10, nullable = false)
     private String ext;
-//    todo
-//    @Column(length = 50)
-//    private String memoType = null;
-
-    @Column(length = 50)
-    @Enumerated(EnumType.STRING)
-    private FilePurpose purpose;
+//    @Column(length = 70, nullable = false)
+//    private String contentType = null;
 
     @CreatedDate
     @Column(updatable = false)

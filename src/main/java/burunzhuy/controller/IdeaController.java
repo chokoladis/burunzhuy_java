@@ -4,6 +4,7 @@ import burunzhuy.dto.http.ApiResponse;
 import burunzhuy.dto.idea.CreateRequest;
 import burunzhuy.dto.idea.UpdateRequest;
 import burunzhuy.exception.auction.AccessException;
+import burunzhuy.exception.common.ContentTypeNotAllowedException;
 import burunzhuy.exception.common.EntityNotFound;
 import burunzhuy.resource.idea.FullResource;
 import burunzhuy.service.IdeaService;
@@ -74,6 +75,10 @@ public class IdeaController {
             return ResponseEntity.ok(
                     ApiResponse.ok(ideaService.create(request, preview, attaches))
             );
+        } catch (ContentTypeNotAllowedException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNPROCESSABLE_CONTENT)
+                    .body(ApiResponse.error(e.getMessage()));
         } catch (Throwable e) {
             // сделать спец ошибки по файлам
             Logger.logToFile("idea.txt", e.getMessage());

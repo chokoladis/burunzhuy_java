@@ -14,4 +14,8 @@ spring:
     change-log: classpath:db/changelog/changelog-master.xml
   jwt:
     secret: ${env.JWT_SECRET}
-    expiration: 86400000
+    lifetime_token: 3600000
+    lifetime_refresh_token: 604800000
+
+storage:
+  upload-dir: uploads/

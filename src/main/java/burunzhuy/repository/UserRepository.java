@@ -1,6 +1,6 @@
 package burunzhuy.repository;
 
-import burunzhuy.entity.User;
+import burunzhuy.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {

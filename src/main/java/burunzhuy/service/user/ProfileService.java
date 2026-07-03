@@ -1,6 +1,6 @@
-package burunzhuy.service;
+package burunzhuy.service.user;
 
-import burunzhuy.entity.User;
+import burunzhuy.entity.user.User;
 import burunzhuy.exception.auth.UserException;
 import burunzhuy.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
