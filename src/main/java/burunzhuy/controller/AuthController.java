@@ -1,13 +1,17 @@
 package burunzhuy.controller;
 
+import burunzhuy.dto.auth.PasswordResetConfirmRequest;
+import burunzhuy.dto.auth.PasswordResetRequest;
 import burunzhuy.dto.jwt.JwtResponse;
 import burunzhuy.dto.auth.LoginRequest;
 import burunzhuy.dto.auth.RegisterRequest;
 import burunzhuy.dto.http.ApiResponse;
 import burunzhuy.entity.user.User;
 import burunzhuy.exception.auth.RegisterException;
+import burunzhuy.exception.common.NotificationSendException;
 import burunzhuy.resource.user.UserResource;
-import burunzhuy.service.user.AuthService;
+import burunzhuy.service.auth.AuthService;
+import burunzhuy.service.auth.PasswordRestoreService;
 import burunzhuy.tool.Logger;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +29,9 @@ import javax.security.auth.login.FailedLoginException;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    private final PasswordRestoreService passwordRestoreService;
 
-    @PostMapping("register")
+    @PostMapping("register/")
     public ResponseEntity<ApiResponse<UserResource>> register(@Valid @RequestBody RegisterRequest request) {
         try {
             User userObj = authService.register(request);
@@ -42,7 +47,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("login")
+    @PostMapping("login/")
     public ResponseEntity<ApiResponse<JwtResponse>> login(@Valid @RequestBody LoginRequest request) {
         try {
             return ResponseEntity.status(HttpStatus.OK)
@@ -60,5 +65,33 @@ public class AuthController {
             return ResponseEntity.internalServerError()
                     .body(ApiResponse.error("Ошибка выполнения кода"));
         }
+    }
+
+    @PostMapping("password/send/")
+    public ResponseEntity<?> passwordSendToken(
+        @Valid @RequestBody PasswordResetRequest request
+    ) {
+        try {
+            passwordRestoreService.sendToken(request);
+
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (NotificationSendException e) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(e.getMessage()));
+        }
+
+    }
+
+    @PostMapping("password/confirm/")
+    public void passwordConfirmReset(
+            @Valid @RequestBody PasswordResetConfirmRequest request
+    ) {
+//        todo check
+        try {
+            passwordRestoreService.restore(request);
+        } catch (Exception e){
+
+        }
+
     }
 }

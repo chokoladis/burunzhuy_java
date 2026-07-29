@@ -3,7 +3,7 @@ package burunzhuy.controller;
 import burunzhuy.dto.jwt.JwtResponse;
 import burunzhuy.dto.http.ApiResponse;
 import burunzhuy.dto.jwt.RefreshRequest;
-import burunzhuy.service.TokenService;
+import burunzhuy.service.auth.TokenService;
 import burunzhuy.tool.Logger;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -22,20 +22,19 @@ public class TokenController {
 
     private final TokenService tokenService;
 
-    @PostMapping("refresh")
-    public ResponseEntity<ApiResponse<JwtResponse>> refresh(@RequestBody RefreshRequest refreshRequest) {
+    @PostMapping("refresh/")
+    public ResponseEntity<ApiResponse<String>> refresh(@RequestBody RefreshRequest refreshRequest) {
         try {
-            Logger.logToFile("token.txt", "token - " + refreshRequest.refresh_token());
             return ResponseEntity.status(HttpStatus.OK)
                 .body(
                     ApiResponse.ok(tokenService.refresh(refreshRequest.refresh_token()))
                 );
         } catch (ExpiredJwtException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(ApiResponse.error("Истекло время действия токена"));
+                .body(ApiResponse.error("Истекло время действия токена"));
         } catch (JwtException e) {
             return ResponseEntity.badRequest()
-                    .body(ApiResponse.error("Некорректный refresh токен"));
+                .body(ApiResponse.error("Некорректный refresh токен"));
         } catch (Throwable globalError) {
             globalError.printStackTrace();
             Logger.logToFile("token.txt", globalError.getMessage());

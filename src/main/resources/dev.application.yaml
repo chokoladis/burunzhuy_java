@@ -19,3 +19,7 @@ spring:
 
 storage:
   upload-dir: uploads/
+
+resend:
+  email-from: "onboarding@resend.dev"
+  api-key: "re_2***"

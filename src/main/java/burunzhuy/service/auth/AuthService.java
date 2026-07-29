@@ -1,4 +1,4 @@
-package burunzhuy.service.user;
+package burunzhuy.service.auth;
 
 import burunzhuy.dto.jwt.JwtResponse;
 import burunzhuy.dto.auth.LoginRequest;

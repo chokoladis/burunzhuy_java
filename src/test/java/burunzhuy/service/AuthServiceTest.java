@@ -6,7 +6,7 @@ import burunzhuy.exception.auth.RegisterException;
 import burunzhuy.repository.RoleRepository;
 import burunzhuy.repository.UserRepository;
 import burunzhuy.service.security.JwtService;
-import burunzhuy.service.user.AuthService;
+import burunzhuy.service.auth.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
