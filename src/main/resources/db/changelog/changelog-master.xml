@@ -13,4 +13,5 @@
     <include file="db/changelog/changes/006-create-ideas-attaches.xml"/>
     <include file="db/changelog/changes/007-create-auctions.xml"/>
     <include file="db/changelog/changes/008-create-wallets.xml"/>
+    <include file="db/changelog/changes/009-create-password-restore.xml"/>
 </databaseChangeLog>

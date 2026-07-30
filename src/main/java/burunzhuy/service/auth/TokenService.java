@@ -1,6 +1,5 @@
-package burunzhuy.service;
+package burunzhuy.service.auth;
 
-import burunzhuy.dto.jwt.JwtResponse;
 import burunzhuy.service.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,10 +9,12 @@ import org.springframework.stereotype.Service;
 public class TokenService {
     private final JwtService jwtService;
 
-    public JwtResponse refresh(String refresh_token)
+    public String refresh(String refresh_token)
     {
         jwtService.validateToken(refresh_token, "refresh");
+        // todo save to db
 
-        return jwtService.refreshToken(refresh_token);
+        return jwtService.getNewAccessTokenByRefresh(refresh_token);
+
     }
 }

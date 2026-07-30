@@ -81,9 +81,9 @@ final public class JwtService {
         }
     }
 
-    public JwtResponse refreshToken(String refresh_token) {
+    public String getNewAccessTokenByRefresh(String refresh_token) {
         String email = extractEmail(refresh_token);
 
-        return getNewTokens(email);
+        return this.generateToken(email);
     }
 }
