@@ -30,7 +30,7 @@ public class PasswordRestore {
 
     @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
     @Column(nullable = false)
     private LocalDateTime expiredAt; // +30m
 }

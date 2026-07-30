@@ -11,7 +11,7 @@ import lombok.Setter;
 public class PasswordResetConfirmRequest {
 
     @NotBlank
-    @Size(min = 64, max = 64)
+    @Size(min = 32, max = 32)
     private String token;
 
     @NotBlank

@@ -15,11 +15,12 @@ public class SecureHelper {
     {
         var secureRandom = new SecureRandom();
 
-        byte[] buffer = new byte[length.orElse(10)];
-
+        int bytesNeeded = (int) Math.ceil(length.orElse(10) * 3.0 / 4.0);
+        byte[] buffer = new byte[bytesNeeded];
 
         secureRandom.nextBytes(buffer);
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(buffer);
+        String rawString = Base64.getUrlEncoder().withoutPadding().encodeToString(buffer);
+        return rawString.substring(0, length.orElse(10));
     }
 
     public static String getHashedValue(String input) {

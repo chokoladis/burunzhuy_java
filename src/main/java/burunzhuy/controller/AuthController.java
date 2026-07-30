@@ -83,14 +83,16 @@ public class AuthController {
     }
 
     @PostMapping("password/confirm/")
-    public void passwordConfirmReset(
+    public ResponseEntity<?> passwordConfirmReset(
             @Valid @RequestBody PasswordResetConfirmRequest request
     ) {
-//        todo check
         try {
             passwordRestoreService.restore(request);
-        } catch (Exception e){
-
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (Throwable e){
+            Logger.logToFile("auth.txt", e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(ApiResponse.error("Произошла непредвиденная ошибка"));
         }
 
     }
