@@ -80,10 +80,4 @@ final public class JwtService {
             throw new ExpiredJwtException(null, claims, "Действие токена авторизации истекло");
         }
     }
-
-    public String getNewAccessTokenByRefresh(String refresh_token) {
-        String email = extractEmail(refresh_token);
-
-        return this.generateToken(email);
-    }
 }
