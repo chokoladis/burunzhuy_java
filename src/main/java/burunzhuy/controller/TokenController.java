@@ -24,11 +24,13 @@ public class TokenController {
     private final TokenService tokenService;
 
     @PostMapping("refresh/")
-    public ResponseEntity<ApiResponse<String>> refresh(@RequestBody RefreshRequest refreshRequest) {
+    public ResponseEntity<ApiResponse<?>> refresh(@RequestBody RefreshRequest refreshRequest) {
         try {
             return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                    ApiResponse.ok(tokenService.getNewAccessToken(refreshRequest.refresh_token()))
+                    ApiResponse.ok(
+                        tokenService.getNewAccessToken(refreshRequest.refreshToken())
+                    )
                 );
         } catch (ExpiredJwtException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

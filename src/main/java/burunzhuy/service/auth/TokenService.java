@@ -4,11 +4,11 @@ import burunzhuy.entity.security.RefreshToken;
 import burunzhuy.entity.user.User;
 import burunzhuy.exception.auth.RefreshTokenInvalidException;
 import burunzhuy.exception.common.EntityNotFound;
+import burunzhuy.helper.SecureHelper;
 import burunzhuy.repository.security.RefreshTokenRepository;
 import burunzhuy.service.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
@@ -25,7 +25,8 @@ public class TokenService {
 
         String email = jwtService.extractEmail(refresh_token);
 
-        this.checks(refresh_token);
+        String hashedToken = SecureHelper.getHashedValue(refresh_token);
+        this.checks(hashedToken);
 
         return jwtService.generateToken(email);
     }
@@ -53,6 +54,10 @@ public class TokenService {
         if (refreshTokens.isEmpty())
             return;
 
-//        refreshTokens. todo chanhe
+        for(RefreshToken token : refreshTokens) {
+            token.setIsRevoked(true);
+        }
+
+        refreshTokenRepository.saveAllAndFlush(refreshTokens);
     }
 }

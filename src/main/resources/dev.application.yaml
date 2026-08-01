@@ -1,3 +1,5 @@
+env:
+  value: "dev"
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5433/burunzhuy
@@ -14,8 +16,8 @@ spring:
     change-log: classpath:db/changelog/changelog-master.xml
   jwt:
     secret: ${env.JWT_SECRET}
-    lifetime_token: 3600000
-    lifetime_refresh_token: 604800000
+    lifetime_token: 3600
+    lifetime_refresh_token: 604800
 
 storage:
   upload-dir: uploads/

@@ -36,7 +36,7 @@ public class RefreshToken {
 
     @CreatedDate
     @Column(updatable = false, nullable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(nullable = false)
     private LocalDateTime expiredAt;

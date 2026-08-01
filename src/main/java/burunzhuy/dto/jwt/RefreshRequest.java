@@ -5,6 +5,6 @@ import jakarta.validation.constraints.Size;
 
 public record RefreshRequest(
     @Size(min = 20)
-    @JsonProperty("refresh_token")
-    String refresh_token
+    @JsonProperty("refreshToken")
+    String refreshToken
 ) {}
