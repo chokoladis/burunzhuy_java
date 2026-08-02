@@ -13,6 +13,7 @@ import burunzhuy.resource.user.UserResource;
 import burunzhuy.service.auth.AuthService;
 import burunzhuy.service.auth.PasswordRestoreService;
 import burunzhuy.tool.Logger;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -48,11 +49,11 @@ public class AuthController {
     }
 
     @PostMapping("login/")
-    public ResponseEntity<ApiResponse<JwtResponse>> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<ApiResponse<JwtResponse>> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
         try {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
-                        ApiResponse.ok(authService.login(request))
+                        ApiResponse.ok(authService.login(request, httpRequest))
                     );
         } catch (FailedLoginException error) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

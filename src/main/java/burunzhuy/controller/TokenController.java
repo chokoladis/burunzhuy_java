@@ -1,8 +1,9 @@
 package burunzhuy.controller;
 
-import burunzhuy.dto.jwt.JwtResponse;
 import burunzhuy.dto.http.ApiResponse;
 import burunzhuy.dto.jwt.RefreshRequest;
+import burunzhuy.exception.auth.RefreshTokenInvalidException;
+import burunzhuy.exception.common.EntityNotFound;
 import burunzhuy.service.auth.TokenService;
 import burunzhuy.tool.Logger;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -23,18 +24,23 @@ public class TokenController {
     private final TokenService tokenService;
 
     @PostMapping("refresh/")
-    public ResponseEntity<ApiResponse<String>> refresh(@RequestBody RefreshRequest refreshRequest) {
+    public ResponseEntity<ApiResponse<?>> refresh(@RequestBody RefreshRequest refreshRequest) {
         try {
             return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                    ApiResponse.ok(tokenService.refresh(refreshRequest.refresh_token()))
+                    ApiResponse.ok(
+                        tokenService.getNewAccessToken(refreshRequest.refreshToken())
+                    )
                 );
         } catch (ExpiredJwtException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(ApiResponse.error("Истекло время действия токена"));
-        } catch (JwtException e) {
+        } catch (JwtException | RefreshTokenInvalidException e) {
             return ResponseEntity.badRequest()
-                .body(ApiResponse.error("Некорректный refresh токен"));
+                .body(ApiResponse.error(e.getMessage()));
+        } catch (EntityNotFound e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error(e.getMessage()));
         } catch (Throwable globalError) {
             globalError.printStackTrace();
             Logger.logToFile("token.txt", globalError.getMessage());
@@ -42,4 +48,5 @@ public class TokenController {
                     .body(ApiResponse.error("Ошибка выполнения кода"));
         }
     }
+    //todo revoke all, with confirmation by phone/email
 }

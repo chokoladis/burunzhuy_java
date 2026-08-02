@@ -7,7 +7,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.Optional;
+import java.util.HexFormat;
 import java.util.OptionalInt;
 
 public class SecureHelper {
@@ -29,15 +29,7 @@ public class SecureHelper {
 
             byte[] hashBytes = digest.digest(input.getBytes(StandardCharsets.UTF_8));
 
-            // Конвертируем байты в шестнадцатеричную строку (Hex)
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : hashBytes) {
-                String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
-            }
-
-            return hexString.toString();
+            return HexFormat.of().formatHex(hashBytes);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             IO.println(e.getMessage());

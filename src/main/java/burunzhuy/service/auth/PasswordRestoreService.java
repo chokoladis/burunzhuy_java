@@ -37,6 +37,7 @@ public class PasswordRestoreService {
     @Qualifier("emailPasswordRestoreSender")
     private final PasswordRestoreSender passwordRestoreSender;
     private final PasswordRestoreRepository passwordRestoreRepository;
+    private final TokenService tokenService;
 
     private String restoreToken;
     private User user;
@@ -109,7 +110,7 @@ public class PasswordRestoreService {
 
         passwordRestoreRepository.save(passwordRestore);
 
-        //todo refresh-token revoke by user
+        tokenService.revokeByUser(user);
     }
 
 
