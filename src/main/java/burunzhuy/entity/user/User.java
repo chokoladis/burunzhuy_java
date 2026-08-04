@@ -1,5 +1,6 @@
 package burunzhuy.entity.user;
 
+import burunzhuy.enums.user.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,7 +46,9 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
-    private Boolean active = true;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.INACTIVE;
 
     @CreatedDate
     @Column(updatable = false)

@@ -62,10 +62,7 @@ public class PasswordRestoreService {
 
     private void checkQtyRequests()
     {
-        // todo cleaner by cron
         LocalDateTime yesterday = LocalDateTime.now().minusDays(1L);
-        //        after - Позже определенной даты (>):
-        //        todo проверить выборку
         Collection<PasswordRestore> rows = passwordRestoreRepository.findByUserIdAndCreatedAtAfter(this.user.getId(), yesterday);
 
         if (rows.isEmpty()) {

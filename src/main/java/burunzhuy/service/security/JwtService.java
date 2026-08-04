@@ -52,7 +52,9 @@ final public class JwtService {
         );
     }
 
-    private Claims getClaims(String token) {
+    private Claims getClaims(String token)
+            throws InvalidClaimException, ExpiredJwtException
+    {
         return Jwts.parser()
                 .verifyWith(getKey())
                 .build()
@@ -68,16 +70,10 @@ final public class JwtService {
         String token, String typeToken
     ) throws JwtException {
         Claims claims = getClaims(token);
-        boolean isDateCorrect = claims
-                .getExpiration()
-                .after(new Date());
         var type = claims.get("type");
 
         if (!typeToken.equals(type)) {
             throw new JwtException("Некорректный тип токена");
-        }
-        if (!isDateCorrect) {
-            throw new ExpiredJwtException(null, claims, "Действие токена авторизации истекло");
         }
     }
 }

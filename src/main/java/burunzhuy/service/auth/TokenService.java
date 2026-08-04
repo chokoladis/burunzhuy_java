@@ -39,7 +39,7 @@ public class TokenService {
 
         if (refreshToken.get().getIsRevoked())
             throw new RefreshTokenInvalidException("Ваш refresh token уже не действителен");
-//
+
         if (refreshToken.get().getExpiredAt().compareTo(LocalDateTime.now()) < 0) {
             refreshToken.get().setIsRevoked(true);
             refreshTokenRepository.save(refreshToken.get());
