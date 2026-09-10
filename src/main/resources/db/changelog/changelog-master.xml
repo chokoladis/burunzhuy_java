@@ -15,4 +15,5 @@
     <include file="db/changelog/changes/008-create-wallets.xml"/>
     <include file="db/changelog/changes/009-create-password-restore.xml"/>
     <include file="db/changelog/changes/010-create-refresh-token.xml"/>
+    <include file="db/changelog/changes/011-create-payment-invoice.xml"/>
 </databaseChangeLog>

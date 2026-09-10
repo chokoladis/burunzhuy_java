@@ -36,7 +36,7 @@ public class WalletHistory {
     @JoinColumn(name = "auction_id")
     private Auction auction;
 
-    @Column(precision = 12, scale = 2)
+    @Column(precision = 12, scale = 2, nullable = false)
     private BigDecimal amount;
 
     @CreatedDate

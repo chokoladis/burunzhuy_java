@@ -1,0 +1,11 @@
+package burunzhuy.repository.pay;
+
+import burunzhuy.entity.pay.Wallet;
+import burunzhuy.entity.user.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface WalletRepository extends JpaRepository<Wallet, Long> {
+    Optional<Wallet> findByCurrencyAndOwner(String currency, User owner);
+}

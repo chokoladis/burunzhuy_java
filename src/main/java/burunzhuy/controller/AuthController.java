@@ -34,6 +34,7 @@ public class AuthController {
 
     @PostMapping("register/")
     public ResponseEntity<ApiResponse<UserResource>> register(@Valid @RequestBody RegisterRequest request) {
+        //todo return access_token too
         try {
             User userObj = authService.register(request);
             return ResponseEntity.ok(ApiResponse.ok(new UserResource(userObj)));

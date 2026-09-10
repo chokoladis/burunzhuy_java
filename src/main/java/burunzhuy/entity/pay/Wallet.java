@@ -26,6 +26,8 @@ public class Wallet {
 
     @Column(precision = 12, scale = 2)
     private BigDecimal balance;
+    //todo available/blocked ?
+
     @Column(length = 40)
     private String currency;
 
