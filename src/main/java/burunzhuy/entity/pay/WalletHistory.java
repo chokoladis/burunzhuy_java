@@ -1,19 +1,19 @@
 package burunzhuy.entity.pay;
 
 import burunzhuy.entity.Auction;
-import burunzhuy.entity.user.Role;
-import burunzhuy.entity.user.User;
 import burunzhuy.enums.pay.TypeTransaction;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @Entity

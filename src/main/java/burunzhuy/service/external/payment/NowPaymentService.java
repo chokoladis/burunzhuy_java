@@ -1,38 +1,47 @@
 package burunzhuy.service.external.payment;
 
-import burunzhuy.dto.external.pay.nowpayment.AuthRequest;
-import burunzhuy.dto.external.pay.nowpayment.AuthResponse;
-import burunzhuy.dto.external.pay.nowpayment.EstimatedPriceResponse;
-import burunzhuy.dto.external.pay.nowpayment.PaymentRequest;
+import burunzhuy.dto.external.pay.nowpayment.*;
+import burunzhuy.entity.pay.PaymentInvoice;
+import burunzhuy.enums.pay.Status;
+import burunzhuy.exception.common.EntityNotFound;
+import burunzhuy.helper.StringHelper;
 import burunzhuy.interfaces.PaymentInterface;
+import burunzhuy.repository.pay.PaymentInvoiceRepository;
 import burunzhuy.tool.Logger;
-import jakarta.annotation.PostConstruct;
+import com.fasterxml.jackson.databind.JsonNode;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.Locale;
+import java.util.Optional;
 
 @Service
 @Primary
+@RequiredArgsConstructor
 public class NowPaymentService implements PaymentInterface {
 
-    @Value("${now_payments.email}")
-    private String email;
-    @Value("${now_payments.password}")
-    private String password;
     @Value("${now_payments.api_key}")
     private String apiKey;
     @Value("${now_payments.api_key_test}")
     private String apiKeyTest;
+    @Value("${now_payments.ipn_secret_test}")
+    private String ipnSecretTest;
 
     public static final String BASE_URL = "https://api.nowpayments.io/";
     public static final String BASE_TEST_URL = "https://api-sandbox.nowpayments.io/";
 
-    public void depositInnerBalance(BigDecimal amount, String currency)
+    private final PaymentInvoiceRepository paymentInvoiceRepository;
+
+    public PaymentResponse depositInnerBalance(BigDecimal amount, String currency)
     {
         var priceResponse = getPrice(amount, currency);
 
@@ -50,9 +59,11 @@ public class NowPaymentService implements PaymentInterface {
                 .uri("/v1/payment")
                 .body(request)
                 .retrieve()
-                .body(String.class);
+                .body(PaymentResponse.class);
 
         Logger.logToFile("nowpayment.txt", "result is " + result);
+
+        return result;
     }
 
     public void withdrawInnerBalance() {
@@ -81,7 +92,7 @@ public class NowPaymentService implements PaymentInterface {
                 .baseUrl(isTest ? BASE_TEST_URL : BASE_URL)
                 .requestFactory(new HttpComponentsClientHttpRequestFactory())
                 .defaultHeader("Content-Type", "application/json")
-                .defaultHeader("x-api-key", this.apiKeyTest)
+                .defaultHeader("x-api-key", isTest ? this.apiKeyTest : this.apiKey)
                 .build();
     }
 
@@ -93,9 +104,75 @@ public class NowPaymentService implements PaymentInterface {
         return this.getClient()
             .get()
             .uri(url)
-//            .header("x-api-key", this.apiKey)
             .retrieve()
             .body(EstimatedPriceResponse.class);
+    }
+
+    public boolean verifySignature(
+            String receivedHmac,
+            JsonNode nodeResponse
+    ) {
+        try {
+            var mapper = StringHelper.getJsonReader();
+            JsonNode sorted = StringHelper.sortNode(nodeResponse, mapper);
+            String sortedNode = mapper.writeValueAsString(sorted);
+
+            String calculatedHmac = calculateHmac(sortedNode, ipnSecretTest.trim());
+
+            return MessageDigest.isEqual(
+                    calculatedHmac.getBytes(StandardCharsets.UTF_8),
+                    receivedHmac.getBytes(StandardCharsets.UTF_8)
+            );
+        } catch (Exception e) {
+            Logger.logToFile("nowpayment.txt", "verify sign err - " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static String calculateHmac(String data, String secret) throws Exception {
+        String algo = "HmacSHA512";
+
+        Mac sha512Hmac = Mac.getInstance(algo);
+        SecretKeySpec keySpec = new SecretKeySpec(
+            secret.getBytes(StandardCharsets.UTF_8),
+            algo
+        );
+        sha512Hmac.init(keySpec);
+
+        return StringHelper.bytesToHex(
+            sha512Hmac.doFinal(data.getBytes(StandardCharsets.UTF_8))
+        );
+    }
+
+    public void handleWebhook(
+        JsonNode nodeResponse
+    ) {
+    //        nodeResponse.get("price_amount");
+    //        nodeResponse.get("price_currency").asText();
+    //        nodeResponse.get("pay_amount");
+    //        nodeResponse.get("pay_currency").asText();
+    //        nodeResponse.get("outcome_amount").asDouble();
+    //        nodeResponse.get("outcome_currency").asText();
+
+        Optional<PaymentInvoice> invoice = paymentInvoiceRepository.findByExternalId(String.valueOf(nodeResponse.get("payment_id").asLong()));
+        if (invoice.isEmpty()) {
+            Logger.logToFile("nowpayment.txt", "unknown invoice - " + nodeResponse.get("payment_id"));
+            throw new EntityNotFound("invoice not found");
+        }
+
+        var invoiceObj = invoice.get();
+
+        try {
+            invoiceObj.setStatus(
+                Status.valueOf(nodeResponse.get("payment_status").asText().toUpperCase())
+            );
+        } catch (IllegalArgumentException e) {
+            Logger.logToFile("nowpayment.txt", "unknown status - " + nodeResponse.get("payment_status").asText());
+            throw e;
+        }
+
+        invoiceObj.setActuallyPaid(new BigDecimal(nodeResponse.get("actually_paid").asText()));
+        paymentInvoiceRepository.save(invoiceObj);
     }
 
 }

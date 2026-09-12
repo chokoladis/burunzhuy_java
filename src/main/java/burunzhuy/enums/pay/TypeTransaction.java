@@ -1,7 +1,7 @@
 package burunzhuy.enums.pay;
 
 public enum TypeTransaction {
-    REFILL, WITHDRAWAL,
+    DEPOSIT, WITHDRAWAL,
     BUY, SELL,
     CHARGE
 }

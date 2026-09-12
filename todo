@@ -1,5 +1,24 @@
 endpoint - варианты оплаты (usdt, usdc, btc, etc.) просто по кешу из nowpayment /v1/full-currencies
 
+// "id": 52,
+//            "code": "USDTTRC20",
+//            "name": "Tether USD (Tron)",
+//            "enable": true,
+//            "logo_url": "/images/coins/usdttrc20.svg",
+//            "track": true,
+//            "cg_id": "tether",
+//            "network": "trx",
+//            "smart_contract": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+//            "network_precision": "6",
+//            "explorer_link_hash": "https://tronscan.org/#/transaction/:hash",
+//            "precision": 6,
+//            "ticker": "usdt",
+//            "is_stable": true,
+//            "created_at": "2024-08-28T16:06:33.998Z",
+//            "updated_at": "2025-11-28T11:25:03.276Z",
+//            "available_for_payment": true,
+//            "available_for_payout": true,
+
 rate limit auth/*, token/*, api/*
 
 v0.2.0
@@ -26,7 +45,7 @@ v1 - добавить фронт на vue или типо того
 wss слушатель для front-а по изменению статуса аукциона на случай когда купили по максимальной цене
 
 -- write claude code // todo
-//todo /webhook/nowpayments
+
 Идемпотентность вебхуков от NOWPayments — если колбэк придёт дважды (а он придёт), баланс не должен задвоиться. Добавь idempotency key по payment_id с уникальным constraint в БД.
 Блокировки при конкурентных операциях — пессимистическая блокировка строки (SELECT ... FOR UPDATE) или оптимистическая через version-column при списании/пополнении баланса, чтобы избежать race condition при одновременных ставках/выводах.
-Проверка подписи вебхука (HMAC) от платёжного провайдера — базовая, но обязательная вещь, которую часто забывают показать явно.
+

@@ -80,6 +80,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        return path.startsWith("/api/v1/auth/") || path.startsWith("/api/v1/token/");
+        return path.startsWith("/api/v1/auth/")
+                || path.startsWith("/api/v1/token/") || path.startsWith("/api/v1/payment/webhook/");
     }
 }

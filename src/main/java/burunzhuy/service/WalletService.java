@@ -41,8 +41,9 @@ public class WalletService {
 
         WalletHistory walletHistory = new WalletHistory();
         walletHistory.setAmount(amount);
-        walletHistory.setType(TypeTransaction.REFILL);
+        walletHistory.setType(TypeTransaction.DEPOSIT);
         walletHistory.setWallet(wallet);
+
         walletHistoryRepository.save(walletHistory);
 
         return walletHistory;
