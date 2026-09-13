@@ -1,5 +1,10 @@
 env:
   value: "dev"
+  cache:
+    type: jcache
+    jcache:
+      config: classpath:ehcache.xml
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5433/burunzhuy

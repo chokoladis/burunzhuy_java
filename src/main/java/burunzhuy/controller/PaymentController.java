@@ -1,5 +1,7 @@
 package burunzhuy.controller;
 
+import burunzhuy.interfaces.PaymentInterface;
+import org.reflections.Reflections;
 import burunzhuy.dto.http.ApiResponse;
 import burunzhuy.dto.pay.DepositRequest;
 import burunzhuy.exception.pay.PayException;
@@ -13,8 +15,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/payment/")
@@ -23,6 +29,43 @@ public class PaymentController {
 
     private final PaymentService paymentService;
     private final NowPaymentService nowPaymentService;
+
+    @GetMapping("nowpayment/currency")
+    public ResponseEntity<?> getCurrencies() {
+        try {
+            var res = nowPaymentService.getCurrencies();
+            return ResponseEntity.ok().body(res);
+        } catch (Exception e) {
+            Logger.logToFile("errors.txt", e.getMessage() + " : " + e.getClass());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @GetMapping("")
+    public ResponseEntity<?> getPaymentMethods() {
+        Reflections reflections = new Reflections("burunzhuy.service.external.payment");
+
+        Set<Class<? extends PaymentInterface>> subTypes =
+                reflections.getSubTypesOf(PaymentInterface.class);
+
+        List<PaymentInterface> list = null;
+
+        for (Class<?> clazz : subTypes) {
+            System.out.println(clazz.getName());
+
+            try {
+                PaymentInterface instance = (PaymentInterface) clazz.getDeclaredConstructor().newInstance();
+
+                IO.println("res - " + instance.getPaymentMethod().getCode());
+                list.add(instance);
+
+            } catch (InstantiationException| IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return ResponseEntity.ok(list);
+    }
 
     /**
      * Currently following fiat currencies are available: USD, EUR, KZT, CHF, RUB, TRY, etc.

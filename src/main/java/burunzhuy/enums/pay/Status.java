@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @JsonFormat(shape = JsonFormat.Shape.STRING)
 public enum Status {
-    SENDING, PARTIALLY_PAYED,
-    // confirmed or payed ?
-    PAYED, CANCELED, REFUNDED,
-    WAITING, FINISHED, FAILED, EXPIRED
+    // no handle - confirmed / confirming
+    WAITING, SENDING,
+    PARTIALLY_PAYED, PAYED,
+    FINISHED, CANCELED, REFUNDED,
+    FAILED, EXPIRED
 }

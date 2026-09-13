@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://www.ehcache.org/v3"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://www.ehcache.org/v3
+            http://www.ehcache.org/schema/ehcache-core.xsd">
+
+    <persistence directory="${user.home}/java-devep/burunzhuy/cache"/>
+
+    <cache alias="nowPayment">
+        <key-type>java.lang.String</key-type>
+        <value-type>java.lang.Object</value-type>
+
+        <expiry>
+            <ttl unit="hours">24</ttl>
+        </expiry>
+
+        <resources>
+            <heap unit="entries">50</heap>
+            <disk unit="MB" persistent="true">2</disk>
+        </resources>
+    </cache>
+</config>

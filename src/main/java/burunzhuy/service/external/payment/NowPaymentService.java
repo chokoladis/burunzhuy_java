@@ -1,6 +1,7 @@
 package burunzhuy.service.external.payment;
 
 import burunzhuy.dto.external.pay.nowpayment.*;
+import burunzhuy.dto.pay.PaymentMethod;
 import burunzhuy.entity.pay.PaymentInvoice;
 import burunzhuy.enums.pay.Status;
 import burunzhuy.exception.common.EntityNotFound;
@@ -11,6 +12,7 @@ import burunzhuy.tool.Logger;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
@@ -173,6 +175,24 @@ public class NowPaymentService implements PaymentInterface {
 
         invoiceObj.setActuallyPaid(new BigDecimal(nodeResponse.get("actually_paid").asText()));
         paymentInvoiceRepository.save(invoiceObj);
+    }
+
+    @Cacheable(cacheNames = "nowPayment", key = "'currencies'")
+    public CurrencyResponse getCurrencies() {
+
+        return getClient()
+                .get()
+                .uri("/v1/full-currencies")
+                .retrieve()
+                .body(CurrencyResponse.class);
+    }
+
+    public PaymentMethod getPaymentMethod(){
+         var method = new PaymentMethod();
+         method.setCode("nowpayment");
+         method.setDescription("Оплата переводом крипты");
+         method.setImg("/uploads/main/pay/NOWPayments.svg"); // todo
+         return method;
     }
 
 }

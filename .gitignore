@@ -1,6 +1,8 @@
 .env
 logs/*
+cache/*
 
 target/*
 .idea
 uploads
+!uploads/main/*
