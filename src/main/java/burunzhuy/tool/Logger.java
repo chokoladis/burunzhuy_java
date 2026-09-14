@@ -31,4 +31,8 @@ public class Logger {
             System.out.println(e.getMessage());
         }
     }
+
+    public static void debug(String data) {
+        logToFile("debug.txt", data);
+    }
 }

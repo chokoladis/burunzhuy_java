@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/profile")
+@RequestMapping("/api/v1/users/")
 @RequiredArgsConstructor
 public class ProfileController {
 
     private final ProfileService profileService;
 
-    @GetMapping("")
+    @GetMapping("me/")
     public ResponseEntity<ApiResponse<UserResource>> getCurrentUser() {
         try {
             return ResponseEntity.ok(

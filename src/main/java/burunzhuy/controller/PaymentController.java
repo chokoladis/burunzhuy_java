@@ -1,5 +1,7 @@
 package burunzhuy.controller;
 
+import burunzhuy.dto.external.pay.nowpayment.PayoutRequest;
+import burunzhuy.dto.external.pay.nowpayment.PayoutWithdrawalRequest;
 import burunzhuy.interfaces.PaymentInterface;
 import org.reflections.Reflections;
 import burunzhuy.dto.http.ApiResponse;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -77,18 +80,44 @@ public class PaymentController {
         @Valid @RequestBody DepositRequest depositRequest
     ) {
         try {
+            // todo повысить планку
             BigDecimal amount = new BigDecimal(depositRequest.amount);
             if (amount.compareTo(new BigDecimal(2)) == -1) {
                 //todo currency
                 throw new PayException("Минимальная сумма депозита 2$");
             }
 
-            paymentService.createInvoice(amount, depositRequest.currency.toLowerCase());
+            paymentService.createDeposit(amount, depositRequest.currency.toLowerCase());
 
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (PayException e) {
             return ResponseEntity.internalServerError()
                     .body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @PostMapping("payout")
+    public ResponseEntity<?> payout(
+            @Valid @RequestBody PayoutWithdrawalRequest payoutRequest
+    ) {
+        try {
+            var result = paymentService.createPayout(payoutRequest);
+
+            // todo повысить планку
+//            BigDecimal amount = new BigDecimal(depositRequest.amount);
+//            if (amount.compareTo(new BigDecimal(2)) == -1) {
+//                //todo currency
+//                throw new PayException("Минимальная сумма депозита 2$");
+//            }
+
+            return ResponseEntity.ok(ApiResponse.ok(Arrays.stream(result.getWithdrawals()).findFirst()));
+        } catch (PayException e) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(e.getMessage()));
+        } catch (Throwable e) {
+            Logger.logToFile("test.txt" , "err - " + e.getMessage());
+            return ResponseEntity.internalServerError()
+                    .body(ApiResponse.error("Ошибка сервера"));
         }
     }
 

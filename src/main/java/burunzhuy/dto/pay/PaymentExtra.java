@@ -9,6 +9,6 @@ import java.math.BigDecimal;
 @Getter
 final public class PaymentExtra {
     private String url;
-    private String pay_address;
-    private BigDecimal pay_amount;
+    private String payAddress;
+    private BigDecimal payAmount;
 }

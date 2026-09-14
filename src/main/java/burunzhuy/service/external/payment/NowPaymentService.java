@@ -23,6 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -30,6 +31,12 @@ import java.util.Optional;
 @Primary
 @RequiredArgsConstructor
 public class NowPaymentService implements PaymentInterface {
+
+    @Value("${now_payments.email}")
+    private String email;
+    @Value("${now_payments.password}")
+    private String password;
+    private String authToken;
 
     @Value("${now_payments.api_key}")
     private String apiKey;
@@ -43,7 +50,7 @@ public class NowPaymentService implements PaymentInterface {
 
     private final PaymentInvoiceRepository paymentInvoiceRepository;
 
-    public PaymentResponse depositInnerBalance(BigDecimal amount, String currency)
+    public PaymentResponse deposit(BigDecimal amount, String currency)
     {
         var priceResponse = getPrice(amount, currency);
 
@@ -68,7 +75,27 @@ public class NowPaymentService implements PaymentInterface {
         return result;
     }
 
-    public void withdrawInnerBalance() {
+    public PayoutResponse payout(PayoutWithdrawalRequest request) {
+        this.auth();
+
+        // todo в очередь ?
+
+        PayoutRequest sendingRequest = new PayoutRequest();
+        sendingRequest.setWithdrawals(new PayoutWithdrawalRequest[]{request});
+
+        var result = this.getClient()
+                .post()
+                .body(sendingRequest)
+                .header("Authorization", "Bearer " + this.authToken)
+                .retrieve()
+                .body(PayoutResponse.class);
+
+        Arrays.stream(result.getWithdrawals()).map( obj -> {
+            Logger.logToFile("test.txt", "res - " + obj.getAddress() +" // " + obj.getAmount() + " - status -" + obj.getStatus());
+            return obj;
+        });
+
+        return result;
     }
 
     public void createInvoice()
@@ -149,13 +176,6 @@ public class NowPaymentService implements PaymentInterface {
     public void handleWebhook(
         JsonNode nodeResponse
     ) {
-    //        nodeResponse.get("price_amount");
-    //        nodeResponse.get("price_currency").asText();
-    //        nodeResponse.get("pay_amount");
-    //        nodeResponse.get("pay_currency").asText();
-    //        nodeResponse.get("outcome_amount").asDouble();
-    //        nodeResponse.get("outcome_currency").asText();
-
         Optional<PaymentInvoice> invoice = paymentInvoiceRepository.findByExternalId(String.valueOf(nodeResponse.get("payment_id").asLong()));
         if (invoice.isEmpty()) {
             Logger.logToFile("nowpayment.txt", "unknown invoice - " + nodeResponse.get("payment_id"));
@@ -179,7 +199,6 @@ public class NowPaymentService implements PaymentInterface {
 
     @Cacheable(cacheNames = "nowPayment", key = "'currencies'")
     public CurrencyResponse getCurrencies() {
-
         return getClient()
                 .get()
                 .uri("/v1/full-currencies")
@@ -193,6 +212,17 @@ public class NowPaymentService implements PaymentInterface {
          method.setDescription("Оплата переводом крипты");
          method.setImg("/uploads/main/pay/NOWPayments.svg"); // todo
          return method;
+    }
+
+    private void auth(){
+        AuthResponse authResponse = getClient()
+                .post()
+                .uri("/v1/auth")
+                .body(new AuthRequest(email, password))
+                .retrieve()
+                .body(AuthResponse.class);
+
+        this.authToken = authResponse.getToken();
     }
 
 }

@@ -10,6 +10,7 @@ import burunzhuy.entity.pay.WalletHistory;
 import burunzhuy.enums.pay.TypeTransaction;
 import burunzhuy.exception.common.ContentTypeNotAllowedException;
 import burunzhuy.exception.common.EntityNotFound;
+import burunzhuy.exception.pay.PayException;
 import burunzhuy.repository.pay.WalletHistoryRepository;
 import burunzhuy.repository.pay.WalletRepository;
 import burunzhuy.resource.idea.FullResource;
@@ -33,15 +34,33 @@ public class WalletService {
     private final WalletHistoryRepository walletHistoryRepository;
     private final ProfileService profileService;
 
+    @Transactional
     public WalletHistory createTransaction(
             BigDecimal amount,
-            String currency
+            String currency,
+            TypeTransaction type
     ) {
-        Wallet wallet = this.firstOrCreate(currency);
+
+        Wallet wallet = null;
+
+        if (type.isMoneyOut()) {
+
+            wallet = this.firstOrFail(currency);
+
+            Logger.logToFile("test.txt", " debug - " + amount + " // " + amount.compareTo(wallet.getBalance()));
+            if (amount.compareTo(wallet.getBalance()) > 0){
+                throw new PayException("Попытка списания больше чем есть на балансе (%f)", wallet.getBalance());
+            }
+
+            wallet.setBalance(wallet.getBalance().subtract(amount));
+            walletRepository.save(wallet);
+        } else {
+            wallet = this.firstOrCreate(currency);
+        }
 
         WalletHistory walletHistory = new WalletHistory();
         walletHistory.setAmount(amount);
-        walletHistory.setType(TypeTransaction.DEPOSIT);
+        walletHistory.setType(type);
         walletHistory.setWallet(wallet);
 
         walletHistoryRepository.save(walletHistory);
@@ -53,9 +72,16 @@ public class WalletService {
     {
         Optional<Wallet> walletCurrentUser = walletRepository.findByCurrencyAndOwner(currency, profileService.getCurrentUser());
 
+        Logger.debug("user is " + profileService.getCurrentUser().getEmail());
+
         Wallet currentWallet = new Wallet();
 
+        Logger.debug("wallet is empty - " + walletCurrentUser.isEmpty());
         if (!walletCurrentUser.isEmpty()) {
+            var res = walletCurrentUser.get();
+
+            Logger.debug("wallet is - " + res.getOwner().getEmail() + " // " + res.getCurrency());
+
             return walletCurrentUser.get();
         } else {
             currentWallet.setBalance(new BigDecimal(0));
@@ -65,6 +91,15 @@ public class WalletService {
 
             return currentWallet;
         }
+    }
+
+    public Wallet firstOrFail(String currency) {
+        Optional<Wallet> currentWallet = walletRepository.findByCurrencyAndOwner(currency, profileService.getCurrentUser());
+
+        if (currentWallet.isEmpty())
+            throw new EntityNotFound("У вас нет кошелька с данной валютой");
+
+        return currentWallet.get();
     }
 
 }
