@@ -52,15 +52,13 @@ public class AuthController {
     @PostMapping("login/")
     public ResponseEntity<ApiResponse<JwtResponse>> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
         try {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(
-                        ApiResponse.ok(authService.login(request, httpRequest))
-                    );
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    ApiResponse.ok(authService.login(request, httpRequest))
+                );
         } catch (FailedLoginException error) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(
-                            ApiResponse.error(error.getMessage())
-                    );
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    ApiResponse.error(error.getMessage())
+                );
         } catch (Throwable globalError) {
             globalError.printStackTrace();
             Logger.logToFile("auth.txt", globalError.getMessage());

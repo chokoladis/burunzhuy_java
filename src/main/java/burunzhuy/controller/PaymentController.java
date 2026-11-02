@@ -1,7 +1,7 @@
 package burunzhuy.controller;
 
+import burunzhuy.dto.pay.PaymentMethod;
 import burunzhuy.interfaces.PaymentInterface;
-import org.reflections.Reflections;
 import burunzhuy.dto.http.ApiResponse;
 import burunzhuy.dto.pay.DepositRequest;
 import burunzhuy.exception.pay.PayException;
@@ -16,11 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/payment/")
@@ -29,6 +27,7 @@ public class PaymentController {
 
     private final PaymentService paymentService;
     private final NowPaymentService nowPaymentService;
+    private final List<PaymentInterface> paymentServices;
 
     @GetMapping("nowpayment/currency")
     public ResponseEntity<?> getCurrencies() {
@@ -43,28 +42,13 @@ public class PaymentController {
 
     @GetMapping("")
     public ResponseEntity<?> getPaymentMethods() {
-        Reflections reflections = new Reflections("burunzhuy.service.external.payment");
 
-        Set<Class<? extends PaymentInterface>> subTypes =
-                reflections.getSubTypesOf(PaymentInterface.class);
-
-        List<PaymentInterface> list = null;
-
-        for (Class<?> clazz : subTypes) {
-            System.out.println(clazz.getName());
-
-            try {
-                PaymentInterface instance = (PaymentInterface) clazz.getDeclaredConstructor().newInstance();
-
-                IO.println("res - " + instance.getPaymentMethod().getCode());
-                list.add(instance);
-
-            } catch (InstantiationException| IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
-            }
+        List<PaymentMethod> list = new ArrayList<>();
+        for (PaymentInterface instance : paymentServices) {
+            list.add(instance.getPaymentMethod());
         }
 
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(ApiResponse.ok(list));
     }
 
     /**
