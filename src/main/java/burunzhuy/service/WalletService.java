@@ -67,4 +67,36 @@ public class WalletService {
         }
     }
 
+    public Optional<Wallet> getByCurrencyAndOwner(String currency)
+    {
+         return walletRepository.findByCurrencyAndOwner(currency, profileService.getCurrentUser());
+    }
+
+    public WalletHistory addTransaction(Wallet wallet, BigDecimal amount, TypeTransaction type)
+    {
+        var newAmount = wallet.getBalance();
+
+        switch (type) {
+            case DEPOSIT:
+            case SELL:
+                newAmount = newAmount.add(amount);
+            case WITHDRAW:
+            case BUY:
+                newAmount = newAmount.subtract(amount);
+            default:
+                //todo
+                Logger.logToFile("debug.txt", "add transaction - no standart operation");
+        }
+
+        wallet.setBalance(newAmount);
+
+        WalletHistory walletHistory = new WalletHistory();
+        walletHistory.setAmount(amount);
+        walletHistory.setType(type);
+        walletHistory.setWallet(wallet);
+
+        walletHistoryRepository.save(walletHistory);
+
+        return walletHistory;
+    }
 }

@@ -2,6 +2,7 @@ package burunzhuy.service.external.payment;
 
 import burunzhuy.dto.external.pay.nowpayment.*;
 import burunzhuy.dto.pay.PaymentMethod;
+import burunzhuy.dto.pay.WithdrawRequest;
 import burunzhuy.entity.pay.PaymentInvoice;
 import burunzhuy.enums.pay.Status;
 import burunzhuy.exception.common.EntityNotFound;
@@ -23,6 +24,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -43,7 +45,7 @@ public class NowPaymentService implements PaymentInterface {
 
     private final PaymentInvoiceRepository paymentInvoiceRepository;
 
-    public PaymentResponse depositInnerBalance(BigDecimal amount, String currency)
+    public PaymentResponse deposit(BigDecimal amount, String currency)
     {
         var priceResponse = getPrice(amount, currency);
 
@@ -68,21 +70,23 @@ public class NowPaymentService implements PaymentInterface {
         return result;
     }
 
-    public void withdrawInnerBalance() {
-    }
-
-    public void createInvoice()
+    public WithdrawResponse withdraw(WithdrawRequest request)
     {
-//    curl --location 'https://api.nowpayments.io/v1/invoice'\
-//            --header 'x-api-key: ***'
-//            --header 'Content-Type: application/json'\
-//            --data '{
-//            "price_amount": "10",
-//            "price_currency": "USD",
-//            "pay_currency": "",
-//            "ipn_callback_url": "https://192.168.0.1/payment/notifications",
-//            "order_description": ""
-//}'
+        var list = new ArrayList<WithdrawRequest>();
+        list.add(request);
+
+        WithdrawalRequest withdrawalRequest = new WithdrawalRequest();
+        withdrawalRequest.setRequests(list);
+
+        var result = getClient().post()
+                .uri("/v1/payout")
+                .body(withdrawalRequest)
+                .retrieve()
+                .body(WithdrawResponse.class);
+
+        Logger.logToFile("services.txt", result.toString());
+
+        return result;
     }
 
     private RestClient getClient() {

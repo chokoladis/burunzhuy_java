@@ -1,9 +1,14 @@
 package burunzhuy.service;
 
 import burunzhuy.dto.pay.PaymentExtra;
+import burunzhuy.dto.pay.WithdrawRequest;
 import burunzhuy.entity.pay.PaymentInvoice;
+import burunzhuy.entity.pay.Wallet;
+import burunzhuy.enums.pay.TypeTransaction;
+import burunzhuy.exception.pay.PayException;
 import burunzhuy.interfaces.PaymentInterface;
 import burunzhuy.repository.pay.PaymentInvoiceRepository;
+import burunzhuy.service.user.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +28,7 @@ public class PaymentService {
         var walletHistory = walletService.createTransaction(amount, currency);
 
         // todo pre transaction
-        var paymentResponse = paymentHandler.depositInnerBalance(amount, currency);
+        var paymentResponse = paymentHandler.deposit(amount, currency);
 
         var paymentInvoice = new PaymentInvoice();
         paymentInvoice.setAmount(amount);
@@ -39,5 +44,24 @@ public class PaymentService {
         paymentInvoice.setExtra(extra);
 
         paymentInvoiceRepository.save(paymentInvoice);
+    }
+
+    public void withdraw(
+        WithdrawRequest request
+    )
+    {
+        Wallet wallet = walletService.getByCurrencyAndOwner(request.getCurrency())
+            .orElseThrow();
+        ;
+        if (request.getAmount().compareTo(wallet.getBalance()) == 1) {
+            throw new PayException(String.format("Превышен лимит средств на счете %s, доступно %f",  request.getCurrency(), wallet.getBalance()));
+        }
+
+        //transaction
+        walletService.addTransaction(wallet, request.getAmount(), TypeTransaction.WITHDRAW);
+
+        //todo rabbitmq
+        //todo handle for output
+        var result = paymentHandler.withdraw(request);
     }
 }

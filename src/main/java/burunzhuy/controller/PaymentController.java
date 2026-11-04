@@ -1,6 +1,7 @@
 package burunzhuy.controller;
 
 import burunzhuy.dto.pay.PaymentMethod;
+import burunzhuy.dto.pay.WithdrawRequest;
 import burunzhuy.interfaces.PaymentInterface;
 import burunzhuy.dto.http.ApiResponse;
 import burunzhuy.dto.pay.DepositRequest;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/v1/payment/")
@@ -110,6 +112,21 @@ public class PaymentController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.error("Invalid request"));
         }
+
+    }
+
+    @PostMapping("withdraw")
+    public void withdraw(
+            @Valid @RequestBody WithdrawRequest request
+    )
+    {
+        // extra_id
+        try {
+            paymentService.withdraw(request);
+        } catch (NoSuchElementException e) {
+
+        }
+
 
     }
 }
