@@ -5,9 +5,34 @@
                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
     <changeSet id="011" author="igor">
+        <createTable tableName="payment_systems">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(60)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="VARCHAR(60)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+
+            <column name="status" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="extra" type="jsonb"/>
+
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+            <column name="updated_at" type="TIMESTAMP" />
+        </createTable>
+
         <createTable tableName="payment_invoices">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="payment_system_id" type="BIGINT">
+                <constraints nullable="false"/>
             </column>
             <column name="external_id" type="VARCHAR(60)">
                 <constraints nullable="false"/>
@@ -40,6 +65,20 @@
                 referencedTableName="wallet_history"
                 referencedColumnNames="id"
                 constraintName="fk_payment_invoices_wallet_hisotry"/>
+
+        <addForeignKeyConstraint
+                baseTableName="payment_invoices"
+                baseColumnNames="payment_system_id" constraintName="fk_payment_invoices_payment_system"
+                 referencedTableName="payment_systems"
+                 referencedColumnNames="id"/>
+
+        <insert tableName="payment_systems">
+            <column name="name">Nowpayment</column>
+            <column name="code">nowpayment</column>
+            <column name="description">Оплата переводом крипты</column>
+            <column name="extra">{"img": "/uploads/main/pay/NOWPayments.svg"}</column>
+            <column name="status">active</column>
+        </insert>
 
     </changeSet>
 </databaseChangeLog>

@@ -6,10 +6,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PaymentMethod {
+public class PaymentSystemDTO {
+    @NotBlank
+    private String name;
     @NotBlank
     private String code;
-    @NotBlank
     private String description;
     @NotBlank
     private String img;

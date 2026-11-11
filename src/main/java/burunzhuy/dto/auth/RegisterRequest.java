@@ -18,16 +18,16 @@ public class RegisterRequest {
     @Size(min = 8, max = 64, message = "Введите от 8 до 64 символов")
     private String password;
 
-    @Size(max = 100)
+    @Size(max = 60)
     @Pattern(regexp = "^[а-яА-ЯёЁ]+$", message = "Поле принимает только кирилицу")
     private String name;
-    @Size(max = 100)
+    @Size(max = 60)
     @Pattern(regexp = "^[а-яА-ЯёЁ]+$", message = "Поле принимает только кирилицу")
     private String secondName;
-    @Size(max = 100)
+    @Size(max = 60)
     @Pattern(regexp = "^[а-яА-ЯёЁ]+$", message = "Поле принимает только кирилицу")
     private String lastName;
 
-    @Size(min = 11, message = "Телефон состоит из 11 символов")
+    @Size(min = 6, max = 15, message = "Телефон состоит от 6 до 15 символов")
     private String phone;
 }

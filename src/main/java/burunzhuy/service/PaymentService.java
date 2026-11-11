@@ -8,7 +8,6 @@ import burunzhuy.enums.pay.TypeTransaction;
 import burunzhuy.exception.pay.PayException;
 import burunzhuy.interfaces.PaymentInterface;
 import burunzhuy.repository.pay.PaymentInvoiceRepository;
-import burunzhuy.service.user.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +23,9 @@ public class PaymentService {
 
 //    todo transaction
 //    @Transactional
-    public void createInvoice(BigDecimal amount, String currency) {
-        var walletHistory = walletService.createTransaction(amount, currency);
+    public void deposit(BigDecimal amount, String currency) {
+        Wallet wallet = walletService.firstOrCreate(currency);
+        var walletHistory = walletService.addTransaction(wallet, amount, TypeTransaction.DEPOSIT);
 
         // todo pre transaction
         var paymentResponse = paymentHandler.deposit(amount, currency);
@@ -60,8 +60,8 @@ public class PaymentService {
         //transaction
         walletService.addTransaction(wallet, request.getAmount(), TypeTransaction.WITHDRAW);
 
-        //todo rabbitmq
-        //todo handle for output
+        //todo send message to rabbitmq
+        //todo handle a output
         var result = paymentHandler.withdraw(request);
     }
 }

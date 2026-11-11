@@ -1,7 +1,6 @@
 package burunzhuy.service.external.payment;
 
 import burunzhuy.dto.external.pay.nowpayment.*;
-import burunzhuy.dto.pay.PaymentMethod;
 import burunzhuy.dto.pay.WithdrawRequest;
 import burunzhuy.entity.pay.PaymentInvoice;
 import burunzhuy.enums.pay.Status;
@@ -44,6 +43,11 @@ public class NowPaymentService implements PaymentInterface {
     public static final String BASE_TEST_URL = "https://api-sandbox.nowpayments.io/";
 
     private final PaymentInvoiceRepository paymentInvoiceRepository;
+
+    public String getCode()
+    {
+        return "nowpayment";
+    }
 
     public PaymentResponse deposit(BigDecimal amount, String currency)
     {
@@ -182,21 +186,13 @@ public class NowPaymentService implements PaymentInterface {
     }
 
     @Cacheable(cacheNames = "nowPayment", key = "'currencies'")
-    public CurrencyResponse getCurrencies() {
+    public Optional<CurrencyResponse> getCurrencies() {
 
-        return getClient()
+        var data = getClient()
                 .get()
                 .uri("/v1/full-currencies")
                 .retrieve()
                 .body(CurrencyResponse.class);
+        return Optional.of(data);
     }
-
-    public PaymentMethod getPaymentMethod(){
-         var method = new PaymentMethod();
-         method.setCode("nowpayment");
-         method.setDescription("Оплата переводом крипты");
-         method.setImg("/uploads/main/pay/NOWPayments.svg"); // todo
-         return method;
-    }
-
 }

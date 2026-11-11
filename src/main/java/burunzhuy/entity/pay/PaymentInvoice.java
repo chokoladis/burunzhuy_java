@@ -28,7 +28,11 @@ public class PaymentInvoice {
     @Column(nullable = false)
     private String externalId;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "payment_system_id", nullable = false)
+    private PaymentSystem paymentSystem;
+
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "wallet_history_id", nullable = false)
     private WalletHistory walletHistory;
 

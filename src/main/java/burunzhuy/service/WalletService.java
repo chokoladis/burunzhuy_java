@@ -33,22 +33,6 @@ public class WalletService {
     private final WalletHistoryRepository walletHistoryRepository;
     private final ProfileService profileService;
 
-    public WalletHistory createTransaction(
-            BigDecimal amount,
-            String currency
-    ) {
-        Wallet wallet = this.firstOrCreate(currency);
-
-        WalletHistory walletHistory = new WalletHistory();
-        walletHistory.setAmount(amount);
-        walletHistory.setType(TypeTransaction.DEPOSIT);
-        walletHistory.setWallet(wallet);
-
-        walletHistoryRepository.save(walletHistory);
-
-        return walletHistory;
-    }
-
     public Wallet firstOrCreate(String currency)
     {
         Optional<Wallet> walletCurrentUser = walletRepository.findByCurrencyAndOwner(currency, profileService.getCurrentUser());
